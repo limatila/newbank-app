@@ -1,0 +1,46 @@
+name: 'newbank-app'
+version: '0.1'
+include: 
+  env_file: ".env"
+
+services:
+  db_pg:
+    image: postgres:14.0
+    restart: unless-stopped
+    ports:
+      - "5432:8042"
+    environment:
+      - POSTGRES_DB = ${PG_DBNAME} #reading from .env
+      - POSTGRES_USER = ${PG_USER}
+      - POSTGRES_PASSWORD = ${PG_PASSWORD}
+
+    #check before other services
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+
+  api-local:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - db_pg:
+        condition: service_started
+    volumes:
+      - ./src/backend:/usr/api/backend
+    ports:
+      - "8080:8041"
+    command: [sh -c "uvicorn src.backend.api:app --host 0.0.0.0 --port 8080 --reload"]
+
+  api-pushed:
+    build: .
+    restart: no
+    depends_on:
+      - db_pg:
+        condition: service_started
+      - db_pg: 
+        condition: service_healthy
+    ports: 
+      - "8080:8043"
+    command: [sh -c "uvicorn src.backend.api:app --host 0.0.0.0 --port 8080 --reload"]
