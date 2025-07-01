@@ -1,0 +1,11 @@
+# main
+uvicorn
+fastapi
+sqlmodel
+slowapi
+alembic
+
+#front - web
+jinja2
+
+#front - app...
