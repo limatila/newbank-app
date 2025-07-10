@@ -9,4 +9,4 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Do NOT copy source code (it will be mounted in dev)
+# Do NOT copy source code (it will be mounted in dev, defined in volumes option)
