@@ -1,9 +1,9 @@
 from sqlmodel import create_engine, Session 
 
-from backend.config import DB_ENGINE_CHOICE, PGSQL_CONNECTION_STRING, SQLITE_CONNECTION_STRING
+from backend.config import DEBUG_MODE, DB_ENGINE_CHOICE, PGSQL_CONNECTION_STRING, SQLITE_CONNECTION_STRING
 
 #* Engines: for manual usage
-def get_engine(engineChoice: str  = "sqlite3" ):
+def get_engine(engineChoice: str  = DB_ENGINE_CHOICE):
     """
     Returns a SQLModel Engine for SQLModel Sessions.
     
@@ -18,7 +18,7 @@ def get_engine(engineChoice: str  = "sqlite3" ):
         case "sqlite" | "sqlite3":
             return create_engine(SQLITE_CONNECTION_STRING)
         case "pgsql":
-            return create_engine(PGSQL_CONNECTION_STRING)
+            return create_engine(PGSQL_CONNECTION_STRING, pool_pre_ping=True, echo=DEBUG_MODE)
         case _:
             raise Exception("Not a valid choice of engine, \nplease select between \"sqlite\" and \"pgsql\".")
 
