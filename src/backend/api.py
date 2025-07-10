@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 
-from backend.routers import redirections
+from backend.routers import redirections, webhooks
 
 #Instance
 api = FastAPI(title="NewBank API", version="0.1", summary="API for interacting with NewBank's main database.")
@@ -11,3 +11,4 @@ api = FastAPI(title="NewBank API", version="0.1", summary="API for interacting w
 
 #Routers
 api.include_router(redirections.redirections_router)
+api.include_router(webhooks.webhooks_router)
