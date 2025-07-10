@@ -211,3 +211,4 @@ __marimo__/
 
 #Alembic
 **/alembic/versions
+**/alembic.ini

@@ -165,7 +165,7 @@ class Investment_offers(SQLModel, table=True):
 
 class Investment_contracts(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
-    brute_applied_value: Decimal
+    gross_applied_value: Decimal
     application_date: datetime = Field(default_factory=datetime.now, nullable=False)
     active: bool = Field(default=True)
     expiration_date: datetime = Field(nullable=False)

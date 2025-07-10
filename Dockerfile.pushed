@@ -1,10 +1,13 @@
 FROM python:3.12-slim
 
+# Build essentials (for py wheel)
+RUN apt-get update && apt-get install -y libpq-dev build-essential
+
 # Install git
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
-# Build essentials (for py wheel)
-RUN apt-get update && apt-get install -y libpq-dev build-essential
+# Install vim
+RUN apt-get install vim
 
 # Create app directory
 WORKDIR /usr/app
