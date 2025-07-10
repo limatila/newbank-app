@@ -5,6 +5,7 @@ sqlmodel
 slowapi
 alembic
 psycopg2
+dotenv
 
 #front - web
 jinja2
