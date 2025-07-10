@@ -2,12 +2,12 @@ from os import system as CMD
 
 from fastapi import APIRouter, Request
 
-webhooks_router = APIRouter(tags=["DevOps"], prefix="hooks")
+webhooks_router = APIRouter(tags=["Webhooks"], prefix="/hooks")
 
-@webhooks_router.get("/git-push")
-def git_push_gateway(request: Request):
+@webhooks_router.get("/git-push", summary="A webhook accessed by github on a case of a Git Push. It'll update the code based on the main git branch")
+def git_push_webhook(request: Request):
     results: list[int] = []
-    results.append( CMD("git -C ./api-pushed-code pull") )
+    results.append( CMD("git -C ./src pull") )
     results.append( CMD("docker compose up --build") )
     results.append( CMD("docker compose restart api-pushed") )
     
