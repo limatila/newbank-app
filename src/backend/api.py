@@ -1,8 +1,5 @@
 #main API executed in Backend
-from typing import Optional
-
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
 
 from backend.routers import redirections, webhooks
 
