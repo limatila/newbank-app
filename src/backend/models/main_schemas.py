@@ -68,6 +68,7 @@ class Debit_historic(SQLModel, table=True):
     CPF_receiver: Optional[str]
     CNPJ_receiver: Optional[str]
     value: Decimal
+    date_purchased: datetime = Field(default_factory=datetime.now, nullable=False)
 
     FK_idTypePayment: Optional[int] = Field(foreign_key="type_payment.id")
     FK_idClient: int = Field(foreign_key="clients.id")
@@ -80,6 +81,8 @@ class Credit_contracts(SQLModel, table=True):
     CPF_receiver: Optional[str]
     CNPJ_receiver: Optional[str]
     value: Decimal
+    date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
+    paid: bool = Field(default=False)
 
     FK_idTypePayment: Optional[int] = Field(foreign_key="type_payment.id")
     FK_idClient: int = Field(foreign_key="clients.id")
@@ -95,6 +98,7 @@ class Credit_invoices(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
     value: Decimal
     due_date: datetime = Field(nullable=False)
+    installment_number: int = Field(ge=1)
 
     FK_idCliente: int = Field(foreign_key="clients.id")
 
@@ -124,7 +128,8 @@ class Loan_contracts(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
     value: Decimal
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
-    installment_quantity: int = Field(default=1, nullable=False)
+    installment_quantity: int = Field(default=1, nullable=False, ge=1)
+    paid: bool = Field(default=False)
 
     FK_idClient: int = Field(foreign_key="clients.id")
 
