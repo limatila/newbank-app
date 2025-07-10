@@ -1,14 +1,12 @@
 # build api at deployment
 FROM python:3.12-slim
 
-# Copy application code
-COPY ./ .
+# Set the working directory
+WORKDIR /usr/app
 
-# Install dependencies
-RUN pip install --no-cache-dir -r 'requirements.txt'
+# Copy requirements and install them (only)
+COPY requirements.txt .
 
-# Set workdir
-WORKDIR /src
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Default command (overwritten by docker-compose)
-CMD ["uvicorn", "backend.api:api", "--host", "0.0.0.0", "--port", "8080"]
+# Do NOT copy source code (it will be mounted in dev)

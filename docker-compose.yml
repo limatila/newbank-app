@@ -20,25 +20,32 @@ services:
       - pgdata_newbank:/var/lib/postgresql/data
 
   api-local:
-    build: .
+    build: 
+      dockerfile: Dockerfile
+      context: .
     restart: unless-stopped
+    ports:
+      - "8041:8080"  # Host:Container
     depends_on:
       db_pg:
         condition: service_healthy
     volumes:
-      - ./src:/usr/src
-    ports:
-      - "8041:8080"  # Host:Container
+      - ./src:/usr/app/src
+    working_dir: /usr/app/src
     command: uvicorn backend.api:api --host 0.0.0.0 --port 8080 --reload
 
   api-pushed:
-    build: .
+    build: 
+      dockerfile: Dockerfile.pushed
+      context: .
     restart: no
     ports:
       - "8043:8080"
+    volumes:
+      - api-pushed_storage:/usr/src
     command: nohup uvicorn backend.api:api --host 0.0.0.0 --port 8080 --reload
     # You will need to handle the Git clone in Dockerfile or entrypoint
 
 volumes:
   pgdata_newbank:
-
+  api-pushed_storage:
