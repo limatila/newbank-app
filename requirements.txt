@@ -4,6 +4,7 @@ fastapi
 sqlmodel
 slowapi
 alembic
+psycopg2
 
 #front - web
 jinja2

@@ -15,7 +15,7 @@ services:
       test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DBNAME}"]
       interval: 10s
       retries: 5
-      timeout: 5s
+      timeout: 1s
     volumes:
       - pgdata_newbank:/var/lib/postgresql/data
 
