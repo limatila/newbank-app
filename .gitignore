@@ -208,3 +208,6 @@ __marimo__/
 
 #Linux nohup
 **/**nohup**.*
+
+#Alembic
+**/alembic/versions
