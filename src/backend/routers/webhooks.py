@@ -7,7 +7,7 @@ webhooks_router = APIRouter(tags=["Webhooks"], prefix="/hooks")
 @webhooks_router.get("/git-push", summary="A webhook accessed by github on a case of a Git Push. It'll update the code based on the main git branch")
 def git_push_webhook(request: Request):
     results: list[int] = []
-    results.append( CMD("git -C ./src pull") )
+    results.append( CMD("git -C ../ pull") )
     
     for r in results:
         if r != 0:
