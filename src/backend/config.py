@@ -5,7 +5,7 @@ from dotenv import dotenv_values
 #.env locations
 envFileName = ".env"
 envFileName_alternatives = [
-
+    "auth.env"
 ]
 
 #pgsql
