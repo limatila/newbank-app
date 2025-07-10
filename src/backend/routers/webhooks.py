@@ -8,8 +8,6 @@ webhooks_router = APIRouter(tags=["Webhooks"], prefix="/hooks")
 def git_push_webhook(request: Request):
     results: list[int] = []
     results.append( CMD("git -C ./src pull") )
-    results.append( CMD("docker compose up --build") )
-    results.append( CMD("docker compose restart api-pushed") )
     
     for r in results:
         if r != 0:
