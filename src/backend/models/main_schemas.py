@@ -7,6 +7,8 @@ from sqlmodel import UniqueConstraint
 
 from backend.models.enums import ProfitIndex
 
+SQLModel.metadata.clear() #clear first
+
 #* Main entitys and stakeholder info
 class Clients(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1, le=1000)
