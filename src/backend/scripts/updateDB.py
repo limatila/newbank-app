@@ -1,4 +1,4 @@
-#Automated migration -- execute for fast migrating experience
+#Automated migration -- execute for fast db upgrade experience
 #* script imported from: https://github.com/limatila/programacao--study/blob/fastapi-pokedex/pokedex/models/makeMigration.py. Author: Átila Lima (me).
 
 #PLEASE RUN THIS FILE AT ROOT DIR (/newbank-app/)
