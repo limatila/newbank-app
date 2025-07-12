@@ -27,7 +27,7 @@ def new_client(name: str, address: str, address_number: str, complement: str, di
     if CPF and len(CPF) != 11:
         raise HTTPException(detail="CPF is not valid, please assure it's 11 characters long.", status_code=400)
 
-    result = register_new_client(CPF, CNPJ, name, address, address_number, complement,
+    result = register_new_client(CNPJ, CPF, name, address, address_number, complement,
                                     district, zip_code, CEP, session=session)
 
     if result:
