@@ -29,13 +29,11 @@ def register_new_client(CNPJ: str, CPF: str, name: str, address: str, address_nu
 
     try:
         newClient = Clients(CPF=CPF, CNPJ=CNPJ, name=name, active=active, FK_idAddress=newAddress.id)
-        session.add(newClient)
+        session.add(newClient)#finally
+        session.commit() #TODO: move
     except IntegrityError:
         session.rollback()
-        raise HTTPException(detail="Client already exists in database.", status_code=409)
-
-    #finally
-    session.commit()
+        raise HTTPException(detail=f"Client with that {"CNPJ" if CNPJ else "CPF"} already exists in database.", status_code=409)
 
     if newAddress and newClient:
         return True
