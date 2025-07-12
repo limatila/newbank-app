@@ -39,6 +39,7 @@ class Clients(SQLModel, table=True):
     __table_args__ = (UniqueConstraint("CPF"), UniqueConstraint("CNPJ"), UniqueConstraint("FK_idAddress"))
 
 class Client_Addresses(SQLModel, table=True):
+    #! for now, 1 address per client.
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
     address: str
     number: str
