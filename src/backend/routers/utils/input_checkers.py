@@ -1,7 +1,7 @@
 
 #only numbers.
-CNPJ_OFICIAL_LENGTH = 11
-CPF_OFICIAL_LENGTH = 14
+CNPJ_OFICIAL_LENGTH = 14
+CPF_OFICIAL_LENGTH = 11
 
 def check_CNPJ_length(CNPJ: str) -> bool:
     """
