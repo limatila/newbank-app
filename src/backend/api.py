@@ -2,7 +2,10 @@
 from fastapi import FastAPI
 
 from backend.routers import redirections, webhooks
-from backend.routers.info_routers import clientsmgmt
+from backend.routers.info_routers import (
+    clientsmgmt,
+    emittersmgmt
+)
 
 #Instance
 api = FastAPI(title="NewBank API", version="0.1", summary="API for interacting with NewBank's main database.")
@@ -12,6 +15,8 @@ api = FastAPI(title="NewBank API", version="0.1", summary="API for interacting w
 api.include_router(redirections.redirections_router)
 api.include_router(webhooks.webhooks_router)
 api.include_router(clientsmgmt.clients_router)
+api.include_router(emittersmgmt.emitters_router)
+
 
 @api.get("/healthcheck")
 def health_check(name: str = None):
