@@ -23,7 +23,7 @@ def get_engine(engineChoice: str = DB_ENGINE_CHOICE, debug: str = DEBUG_MODE):
             raise Exception("Not a valid choice of engine, \nplease select between \"sqlite\" and \"pgsql\".")
 
 #* For FastAPI.Depends
-def get_db_session_dependency():
+def get_db_session():
     """
     Yields a created session for use in FastAPI decorated Functions with the 'Depends' function in params\n
     Expects that config.DB_ENGINE_CHOICE global variable is either:
