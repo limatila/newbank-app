@@ -42,8 +42,8 @@ class Client_Addresses(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
     address: str
     number: str
-    complement: str
-    district: Optional[str]
+    district: str
+    complement: Optional[str]
     zip_code: Optional[str]
     CEP: Optional[str]
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
