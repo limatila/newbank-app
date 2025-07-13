@@ -3,7 +3,7 @@ name: 'newbank-app'
 services:
   db_pg:
     image: postgres:14.0
-    restart: unless-stopped
+    restart: always
     ports:
       - "8042:5432"  # Host:Container
     env_file: .env
@@ -13,8 +13,8 @@ services:
       POSTGRES_PASSWORD: ${PG_PASSWORD}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DBNAME}"]
-      interval: 10s
-      retries: 5
+      interval: 15s
+      retries: 2
       timeout: 1s
     volumes:
       - pgdata_newbank:/var/lib/postgresql/data
@@ -38,7 +38,7 @@ services:
     build: 
       dockerfile: Dockerfile.pushed
       context: .
-    restart: no
+    restart: unless-stopped
     ports:
       - "8043:8080"
     volumes:
