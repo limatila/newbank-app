@@ -6,7 +6,8 @@ from backend.models import Clients, Client_Addresses
 
 # Create
 def register_new_client(CNPJ: str, CPF: str, name: str, address: str, address_number: str, complement: str, 
-                        district: str, zip_code: str, CEP: str, session: Session, active: bool = True):    
+                        district: str, zip_code: str, CEP: str, session: Session, active: bool = True) -> bool:    
+    
     #TODO: new_credit = generate_new_credit(CPF, CNPJ)  #performs calculation for client's new credit
 
     #find duplicate
@@ -35,9 +36,7 @@ def register_new_client(CNPJ: str, CPF: str, name: str, address: str, address_nu
         session.rollback()
         raise HTTPException(detail=f"Client with that {"CNPJ" if CNPJ else "CPF"} already exists in database.", status_code=409)
 
-    if newAddress and newClient:
-        return True
-    else: False
+    return True if (newAddress and newClient) else False
 
 
 # Getters
