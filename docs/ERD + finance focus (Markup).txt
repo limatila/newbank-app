@@ -1,0 +1,96 @@
+
+Clientes {
+	id integer pk increments unique
+	nome integer
+	CPF varchar null
+	CNPJ varchar null
+	saldo_débito double
+	saldo_crédito double
+	score integer
+	data_aprovado date
+	ativo boolean
+	data_desativado date
+	FK_idEndereço integer > Endereços.id
+}
+
+Ofertas_investimento {
+	id integer pk increments unique
+	FK_idEmissor integer *> Emissor.id
+	FK_idTipoInvestimento integer > Tipo_Investimento.id
+	nome varchar
+	taxa_juros double
+	aporte_minimo double
+	aporte_maximo double
+	quantidade_meses_expiração integer
+	data_aprovação date
+	ativo bool
+	data_desativado integer
+}
+
+Ofertas_empréstimo {
+	id integer pk increments unique
+	FK_idEmissor integer *> Emissor.id
+	FK_idTipoEmpréstimo integer > Tipo_Empréstimo.id
+	nome varchar
+	taxa_juros double
+	parcelamento_máximo integer
+	data_aprovado date
+	ativo bool
+	data_desativado date
+}
+
+Contratos_empréstimos {
+	id integer pk increments unique
+	FK_idCliente integer *> Clientes.id
+	FK_idOfertaEmpréstimo integer *> Ofertas_empréstimo.id
+	valor_total double
+	data_aprovado date
+	quantidade_parcelamento integer
+	pago boolean
+	data_pago date
+	ativo boolean
+	data_desativado date
+}
+
+Contratos_investimento {
+	id integer pk increments unique
+	FK_idCliente integer *> Clientes.id
+	FK_idOfertaInvestimento integer *> Ofertas_investimento.id
+	valor_bruto_aplicado double
+	data_aplicação date
+	data_vencimento date
+	ativo boolean
+	data_desativado date
+}
+
+Faturamento_empréstimos {
+	id integer pk increments unique
+	FK_idContratoEmpréstimo integer *> Contratos_empréstimos.id
+	valor_fatura double
+	data_aprovado date
+	data_vencimento date
+	pago bool
+	data_pago date
+}
+
+Tipo_Investimento {
+	id integer pk increments unique
+	nome varchar
+	tipo varchar def(FIXED)
+	date_approved date
+}
+
+Tipo_Empréstimo {
+	id integer pk increments unique
+	nome varchar
+	date_approved date
+}
+
+Emissor {
+	id integer pk increments unique
+	nome integer
+	CNPJ integer
+	date_approved date
+	active bool
+	date_deactivated date null
+}

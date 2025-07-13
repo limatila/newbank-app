@@ -1,0 +1,100 @@
+
+Clientes {
+	id integer pk increments unique
+	nome integer
+	CPF varchar null
+	CNPJ varchar null
+	saldo_débito double
+	saldo_crédito double
+	score integer
+	data_aprovado date
+	ativo boolean
+	data_desativado date
+	FK_idEndereço integer > Endereços.id
+}
+
+Emissor {
+	id integer pk increments unique
+	nome integer
+	CNPJ integer
+	date_approved date
+	active bool
+	date_deactivated date null
+}
+
+contratos_crédito {
+	id integer pk increments unique
+	FK_idCliente integer *> Clientes.id
+	FK_idEmissor integer *> Emissor.id
+	FK_idMétodoPagamento integer *> método_pagamento.id
+	tipo_pagamento varchar *> tipo_pagamento.id
+	beneficiario_CPF varchar null
+	beneficiario_CNPJ varchar null
+	valor double
+	numero_nota_fiscal varchar
+	data_registro date
+	pago boolean
+	data_pago date
+}
+
+faturamento_crédito {
+	id integer pk increments unique
+	FK_idCliente integer *> Clientes.id
+	FK_idContratoCrédito integer *> contratos_crédito.id
+	FK_idFaturaCrédito integer > faturas_crédito.id
+	valor double
+	numero_parcela integer
+	data_aprovado date
+}
+
+histórico_débito {
+	id integer pk increments unique
+	FK_idCliente integer *> Clientes.id
+	FK_idMétodoPagamento integer *> método_pagamento.id
+	tipo_pagamento varchar
+	beneficiário_CPF varchar null
+	beneficiário_CNPJ varchar null
+	valor double
+	data_aprovado date
+}
+
+faturas_crédito {
+	id integer pk increments unique
+	FK_idCliente integer *> Clientes.id
+	valor_total double
+	código_de_barras varchar
+	código_pix varchar
+	data_aprovado date
+	data_fechamento date
+	data_vencimento date
+	pago bool
+	data_pago date
+}
+
+cartões {
+	id integer pk increments unique
+	FK_idCliente integer *> Clientes.id
+	digitos varchar
+	data_vencimento date
+	código_CVV varchar
+	tipo_cartao varchar
+	data_aprovado date
+	ativo bool
+	data_desativado date
+}
+
+chaves_pix {
+	id integer pk increments unique
+	tipo_chave varchar
+	chave varchar
+	data_aprovado date
+	FK_idCliente integer *> Clientes.id
+}
+
+método_pagamento {
+	tipo_método varchar
+	id integer pk increments
+	FK_idPix integer null > chaves_pix.id
+	FK_idCartão integer null > cartões.id
+}
+
