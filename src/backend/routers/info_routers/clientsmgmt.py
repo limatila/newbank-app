@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from fastapi import Depends, HTTPException
 from sqlmodel import Session
 
-from backend.dependencies.connections import get_db_session_dependency
+from backend.dependencies.connections import get_db_session
 from backend.services.infomgmt.clientsmgmt import (
     register_new_client,
     load_client_by_CNPJ,
@@ -10,6 +10,7 @@ from backend.services.infomgmt.clientsmgmt import (
     load_client_address,
 )
 from backend.routers.utils.input_checkers import (
+    transform_document_to_digits,
     check_CNPJ_length,
     check_CPF_length,
     CNPJ_OFICIAL_LENGTH,
@@ -22,7 +23,7 @@ clients_router = APIRouter(prefix='/clients', tags=['Client information'])
 @clients_router.post("/new")
 def new_client(name: str, address: str, address_number: str, complement: str, district: str,
                     CNPJ: str = None, CPF: str = None, zip_code: str = None, CEP: str = None, active: bool = True,
-                    session: Session = Depends(get_db_session_dependency)):
+                    session: Session = Depends(get_db_session)):
     if not CPF and not CNPJ:
         raise HTTPException(detail="Newbank's Clients needs CNPJ or CPF.", status_code=403)
     if not CEP and not zip_code:
@@ -43,7 +44,12 @@ def new_client(name: str, address: str, address_number: str, complement: str, di
 
 #GET
 @clients_router.get("/load/CNPJ/{CNPJ_number}")
-def get_client_with_CNPJ(CNPJ_number: str, session: Session = Depends(get_db_session_dependency)):
+def get_client_with_CNPJ(CNPJ_number: str, session: Session = Depends(get_db_session)):
+    """
+        #! possible slashes '/' MUST be entered as '%2F'.
+    """
+    CNPJ_number = transform_document_to_digits(CNPJ_number, 'CNPJ')
+
     if not check_CNPJ_length(CNPJ_number):
         raise HTTPException(detail=f"CNPJ is not valid, please assure it's {CNPJ_OFICIAL_LENGTH} characters long.", status_code=400)
     
@@ -54,7 +60,9 @@ def get_client_with_CNPJ(CNPJ_number: str, session: Session = Depends(get_db_ses
     else: raise HTTPException(detail="No client was found with this CNPJ.", status_code=404)
 
 @clients_router.get("/load/CPF/{CPF_number}")
-def get_client_with_CPF(CPF_number: str, session: Session = Depends(get_db_session_dependency)):
+def get_client_with_CPF(CPF_number: str, session: Session = Depends(get_db_session)):
+    CPF_number = transform_document_to_digits(CPF_number, 'CPF')
+
     if not check_CPF_length(CPF_number):
         raise HTTPException(detail=f"CPF is not valid, please assure it's {CPF_OFICIAL_LENGTH} characters long.", status_code=400)
     
@@ -65,7 +73,9 @@ def get_client_with_CPF(CPF_number: str, session: Session = Depends(get_db_sessi
     else: raise HTTPException(detail="No client was found with this CPF.", status_code=404)
 
 @clients_router.get("/load-address/CNPJ/{CNPJ_number}")
-def get_client_address_with_CNPJ(CNPJ_number: str, session: Session = Depends(get_db_session_dependency)):
+def get_client_address_with_CNPJ(CNPJ_number: str, session: Session = Depends(get_db_session)):
+    CNPJ_number = transform_document_to_digits(CNPJ_number, 'CNPJ')
+
     if not check_CNPJ_length(CNPJ_number):
         raise HTTPException(detail=f"CNPJ is not valid, please assure it's {CNPJ_OFICIAL_LENGTH} characters long.", status_code=400)
     
@@ -76,7 +86,9 @@ def get_client_address_with_CNPJ(CNPJ_number: str, session: Session = Depends(ge
     else: raise HTTPException(detail="No client address was found with this CNPJ.", status_code=404)
 
 @clients_router.get("/load-address/CPF/{CPF_number}")
-def get_client_address_with_CPF(CPF_number: str, session: Session = Depends(get_db_session_dependency)):
+def get_client_address_with_CPF(CPF_number: str, session: Session = Depends(get_db_session)):
+    CPF_number = transform_document_to_digits(CPF_number, 'CPF')
+
     if not check_CPF_length(CPF_number):
         raise HTTPException(detail=f"CPF is not valid, please assure it's {CPF_OFICIAL_LENGTH} characters long.", status_code=400)
     
