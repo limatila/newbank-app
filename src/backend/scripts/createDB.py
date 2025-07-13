@@ -1,11 +1,18 @@
-from backend.models import *
-from backend.dependencies.connections import get_engine
+# First db creation script
+#! You can run it manually, or it will be runned on API startup.
+
 from sqlmodel import SQLModel
+from sqlalchemy import inspect
+from backend.dependencies.connections import get_engine
+from backend.models import *
 
-#! First generation only
-#! subsequently, use updateDB.py
+def create_schema_in_first_startup():
+    engine = get_engine(debug='False')
+    inspector = inspect(engine)
+    
+    if not inspector.has_table("clients") or not inspector.has_table("debit_historic"): #core tables
+        SQLModel.metadata.create_all(engine)
+        print("** Creating DB tables in first api startup **")
+
 if __name__ == "__main__":
-    from backend.dependencies.connections import get_engine
-
-    engine = get_engine()
-    SQLModel.metadata.create_all(engine)
+    create_schema_in_first_startup()

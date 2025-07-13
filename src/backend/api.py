@@ -1,6 +1,7 @@
 #main API executed in Backend
 from fastapi import FastAPI
 
+from backend.scripts.createDB import create_schema_in_first_startup
 from backend.routers import redirections, webhooks
 from backend.routers.info_routers import (
     clientsmgmt,
@@ -17,6 +18,9 @@ api.include_router(webhooks.webhooks_router)
 api.include_router(clientsmgmt.clients_router)
 api.include_router(emittersmgmt.emitters_router)
 
+@api.on_event("startup")
+def startup_event():
+    create_schema_in_first_startup()
 
 @api.get("/healthcheck")
 def health_check(name: str = None):
