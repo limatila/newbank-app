@@ -40,6 +40,7 @@ def new_client(name: str, address: str, address_number: str, complement: str, di
         return {"result": "sucess"}
     else: return {"result": "failure"}
 
+
 #GET
 @clients_router.get("/load/CNPJ/{CNPJ_number}")
 def get_client_with_CNPJ(CNPJ_number: str, session: Session = Depends(get_db_session_dependency)):

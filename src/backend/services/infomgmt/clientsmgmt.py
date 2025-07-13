@@ -48,24 +48,21 @@ def load_client_by_CPF(CPF: str, session: Session):
     stmt = select(Clients).where(Clients.CPF == CPF)
     return session.exec(stmt).one_or_none()
 
-def load_client_address(CPF: str, CNPJ: str, session: Session):
+def load_client_address(session: Session, CPF: str = None, CNPJ: str = None):
     if CNPJ:
-       client: Clients = load_client_by_CNPJ(CNPJ)
+       client: Clients = load_client_by_CNPJ(CNPJ, session)
     elif CPF: 
-       client: Clients = load_client_by_CPF(CPF)
+       client: Clients = load_client_by_CPF(CPF, session)
     else: raise Exception("Address search needs CNPJ or CPF to work.")
 
     if not client: raise HTTPException(detail="No client was found when searching address.", status_code=404)
 
-    stmt = select(Clients.id, Client_Addresses).join(Client_Addresses) \
-                    .where(Client_Addresses.client.id == client.id).order_by(Client_Addresses.id)
-    result = session.exec(stmt).first().one_or_none()
+    stmt = select(Client_Addresses).join(Clients) \
+                    .where(Clients.id == client.id).order_by(Client_Addresses.id)
+    result = session.exec(stmt).one_or_none()
 
     #interpreting before deliver
-    if isinstance(result, tuple):
-        result = {
-            "client_id": result[0],
-            "client_address": result[1]
+    return {
+            "client_id": client.id,
+            "client_address": result
         }
-
-    return result
