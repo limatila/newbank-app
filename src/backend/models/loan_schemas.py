@@ -29,18 +29,24 @@ class Loan_offers(SQLModel, table=True):
 
     type_loan: Optional['Type_Loan'] = Relationship(back_populates="offers")
     emitter: 'Emitters' = Relationship(back_populates="loan_offers")
+    loan_contracts: List['Loan_contracts'] = Relationship(back_populates="Loan_offer")
 
 class Loan_contracts(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
     value: Decimal
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
     installment_quantity: int = Field(default=1, nullable=False, ge=1)
-    paid: bool = Field(default=False)
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
+    paid: bool = Field(default=False)
+    date_paid: Optional[datetime]
+    active: bool = Field(default=False)
+    date_deactivated = Field(default_factory=datetime.now, nullable=False)
 
     FK_idClient: int = Field(foreign_key="clients.id")
+    FK_idLoanOffer: int = Field(foreign_key="loan_offers.id")
 
     client: 'Clients' = Relationship(back_populates="loan_contracts")
+    loan_offer: 'Loan_offers' = Relationship(back_populates="loan_contracts")
     invoices: List['Loan_invoices'] = Relationship(back_populates="loan_contract")
 
 class Loan_invoices(SQLModel, table=True):
@@ -50,6 +56,7 @@ class Loan_invoices(SQLModel, table=True):
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
     date_due: datetime = Field(nullable=False)
     paid: bool = Field(default=True)
+    date_paid: Optional[datetime]
 
     FK_idLoanContract: int = Field(foreign_key="loan_contracts.id")
 

@@ -5,6 +5,7 @@ from datetime import datetime
 from sqlmodel import SQLModel, Field, Relationship
 from sqlmodel import UniqueConstraint
 
+#oficial SQLModel's turn around to avoid circular imports
 if TYPE_CHECKING:
     from backend.models.investment_schemas import Investment_contracts, Investment_offers
     from backend.models.loan_schemas import Loan_contracts, Loan_offers
@@ -63,3 +64,9 @@ class Emitters(SQLModel, table=True):
     investment_offers: List['Investment_offers'] = Relationship(back_populates="emitter")
 
     __table_args__ = (UniqueConstraint("CNPJ"), )
+
+class Cards(SQLModel, table=True):
+    ... #TODO
+
+class Pix_keys(SQLModel, table=True):
+    ... #TODO

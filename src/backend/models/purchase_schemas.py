@@ -47,16 +47,15 @@ class Credit_contracts(SQLModel, table=True):
     type_payment: Optional['Type_Payment'] = Relationship(back_populates="credits")
     client: 'Clients' = Relationship(back_populates="credit_contracts")
     emitter: 'Emitters' = Relationship(back_populates="credit_contracts")
-    credit_invoices: List['credit_invoices'] = Relationship(back_populates="credit_contract")
+    credit_invoices: List['Credit_invoices'] = Relationship(back_populates="credit_contract")
 
     __table_args__ = (UniqueConstraint("CPF_receiver"), UniqueConstraint("CNPJ_receiver"))
 
 class Credit_invoices(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
     value: Decimal
-    date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
-    date_due: datetime = Field(nullable=False)
     installment_number: int = Field(ge=1)
+    date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
 
     FK_idCliente: int = Field(foreign_key="clients.id")
     FK_idCreditContract: int = Field(foreign_key="credit_conteacts.id")

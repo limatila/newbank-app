@@ -21,8 +21,8 @@ class Investment_offers(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
     name: str
     interest_rate: Decimal = Field(default=0.00, nullable=False)
-    min_funding: int = Field(default=0, nullable=False)
-    max_funding: int = Field(default=10000, nullable=False)
+    min_funding: Decimal = Field(default=0.00, nullable=False)
+    max_funding: Decimal = Field(default=10000.00, nullable=False)
     expiration_months: int #only for month count!
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
     active: bool = Field(default=True)
