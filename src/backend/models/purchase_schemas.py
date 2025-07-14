@@ -35,8 +35,10 @@ class Credit_contracts(SQLModel, table=True):
     CPF_receiver: Optional[str]
     CNPJ_receiver: Optional[str]
     value: Decimal
+    fiscal_note_number: str
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
     paid: bool = Field(default=False)
+    date_paid: Optional[datetime]
 
     FK_idTypePayment: Optional[int] = Field(foreign_key="type_payment.id")
     FK_idClient: int = Field(foreign_key="clients.id")
@@ -45,6 +47,7 @@ class Credit_contracts(SQLModel, table=True):
     type_payment: Optional['Type_Payment'] = Relationship(back_populates="credits")
     client: 'Clients' = Relationship(back_populates="credit_contracts")
     emitter: 'Emitters' = Relationship(back_populates="credit_contracts")
+    credit_invoices: List['credit_invoices'] = Relationship(back_populates="credit_contract")
 
     __table_args__ = (UniqueConstraint("CPF_receiver"), UniqueConstraint("CNPJ_receiver"))
 
@@ -56,5 +59,8 @@ class Credit_invoices(SQLModel, table=True):
     installment_number: int = Field(ge=1)
 
     FK_idCliente: int = Field(foreign_key="clients.id")
+    FK_idCreditContract: int = Field(foreign_key="credit_conteacts.id")
 
     client: 'Clients' = Relationship(back_populates="credit_invoices")
+    credit_contract: 'Credit_contracts' = Relationship(back_populates="credit_invoice")
+

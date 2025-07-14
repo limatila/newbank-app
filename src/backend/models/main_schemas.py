@@ -19,7 +19,7 @@ class Clients(SQLModel, table=True):
     CPF: Optional[str] #talvez 2 tabelas para PF e PJ?
     CNPJ: Optional[str]
     debit_balance: Decimal = Field(default=0, ge=0)
-    credit_balance: Decimal = Field(default=0, ge=0)
+    credit_balance: Decimal = Field(default=0)
     score: int = Field(default=500, ge=1, le=1000)
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
     active: bool = Field(default=True)
