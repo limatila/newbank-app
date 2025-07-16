@@ -8,13 +8,15 @@
 from os import system as cmd
 import datetime
 
-migrationMessage = str(input("Please enter a migration message\t->"))
+from backend.scripts.createDB import messagesPrefix
+
+migrationMessage = str(input(f"{messagesPrefix}Please enter a migration message\t->"))
 
 result = cmd(f"alembic revision --autogenerate -m \"{migrationMessage}\"")
 
 result_2: int = -10
 if result == 0:
-    choiceMigrateNow = str(input("migration created. Migrate Now? (y/N)\t->"))
+    choiceMigrateNow = str(input(f"{messagesPrefix}Migration created. Migrate Now? (y/N)\t->"))
     if choiceMigrateNow.lower().startswith("y"):
         result_2 = cmd("alembic upgrade head")
 
@@ -27,6 +29,6 @@ elif result == 0 and result_2 == -10:
     with open('migration-history.log', 'a') as file:
         now = datetime.datetime.now()
         file.write(f"\n[{now}] -- Migration created (ready to migrate): {migrationMessage}")
-        print("Migration created. Migrate with: \'alembic upgrade head\'")
+        print(f"{messagesPrefix}Migration created. Migrate with: \'alembic upgrade head\'")
 else: 
-    print("Migration was not created.")
+    print(f"{messagesPrefix}Migration was not created.")
