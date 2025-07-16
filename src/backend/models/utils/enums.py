@@ -32,7 +32,7 @@ class TypeMethodPayment(stringableEnum):
     DEBIT = "debit"
 
 class TypeCard(stringableEnum):
-    PHYISICAL = "physical"
+    PHYSICAL = "physical"
     VIRTUAL = "virtual"
 
 class TypePixKey(stringableEnum):

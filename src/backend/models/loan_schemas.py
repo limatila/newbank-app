@@ -40,7 +40,7 @@ class Loan_contracts(SQLModel, table=True):
     paid: bool = Field(default=False)
     date_paid: Optional[datetime]
     active: bool = Field(default=False)
-    date_deactivated = Field(default_factory=datetime.now, nullable=False)
+    date_deactivated: datetime = Field(default_factory=datetime.now, nullable=False)
 
     FK_idClient: int = Field(foreign_key="clients.id")
     FK_idLoanOffer: int = Field(foreign_key="loan_offers.id")

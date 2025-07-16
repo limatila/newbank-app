@@ -7,16 +7,20 @@ from .investment_schemas import *
 
 __all__: list[str] = [
     "Clients",
-    "Emitters",
     "Client_Addresses",
-    "Type_Payment",
-    "Type_Investment",
-    "Type_Loan",
+    "Cards",
+    "Pix_keys",
+    "Emitters",
+    "Payment_methods",
     "Debit_historic",
     "Credit_contracts",
+    "Credit_billings",
     "Credit_invoices",
+    "Type_Loan", #! maybe will change to enum
+    "Loan_offers",
+    "Loan_contracts",
+    "Loan_invoices",
+    "Type_Investment",
     "Investment_contracts",
     "Investment_offers",
-    "Loan_contracts",
-    "Loan_offers",
 ]

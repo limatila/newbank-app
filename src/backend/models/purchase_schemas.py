@@ -4,9 +4,9 @@ from datetime import datetime
 
 from sqlmodel import SQLModel, Field, Relationship, UniqueConstraint
 
+from backend.models.utils.enums import TypePayment, TypeMethodPayment
 if TYPE_CHECKING:
     from backend.models.main_schemas import Clients, Emitters, Pix_keys, Cards
-    from backend.models.utils.enums import TypePayment, TypeMethodPayment
 
 #* Debit and Credit payments
 

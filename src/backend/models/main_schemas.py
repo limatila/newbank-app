@@ -1,3 +1,5 @@
+from __future__ import annotations;
+
 from typing import List, Optional, TYPE_CHECKING
 from decimal import Decimal
 from datetime import datetime
@@ -5,12 +7,12 @@ from datetime import datetime
 from sqlmodel import SQLModel, Field, Relationship
 from sqlmodel import UniqueConstraint
 
+from backend.models.utils.enums import TypeCard, TypePixKey
 #oficial SQLModel's turn around to avoid circular imports
 if TYPE_CHECKING:
     from backend.models.investment_schemas import Investment_contracts, Investment_offers
     from backend.models.loan_schemas import Loan_contracts, Loan_offers
     from backend.models.purchase_schemas import Credit_contracts, Credit_invoices, Credit_billings, Debit_historic, Payment_methods
-    from backend.models.utils.enums import TypeCard, TypePixKey
 
 SQLModel.metadata.clear() #clear first
 
@@ -75,7 +77,7 @@ class Cards(SQLModel, table=True):
     digits: str
     date_expires: datetime
     CVV_code: str
-    type_card: TypeCard = Field(default=TypeCard.PHYISICAL, nullable=False)
+    type_card: Optional[TypeCard] = Field(default=TypeCard.PHYSICAL, nullable=False)
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
     ativo: bool = Field(default=True)
     date_deactivated: Optional[datetime]

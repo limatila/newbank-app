@@ -5,6 +5,7 @@ from sqlmodel import SQLModel
 from sqlalchemy import inspect
 from backend.dependencies.connections import get_engine
 from backend.models import *
+from backend.models.utils.enums import *
 
 def create_schema_in_first_startup():
     engine = get_engine(debug='False')
