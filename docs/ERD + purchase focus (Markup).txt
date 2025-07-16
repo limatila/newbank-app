@@ -15,8 +15,8 @@ Clientes {
 
 Emissor {
 	id integer pk increments unique
-	nome integer
-	CNPJ integer
+	nome varchar
+	CNPJ varchar
 	date_approved date
 	active bool
 	date_deactivated date null
@@ -37,7 +37,7 @@ contratos_crédito {
 	data_pago date
 }
 
-faturamento_crédito {
+parcelas_fatura_crédito {
 	id integer pk increments unique
 	FK_idCliente integer *> Clientes.id
 	FK_idContratoCrédito integer *> contratos_crédito.id
@@ -45,6 +45,8 @@ faturamento_crédito {
 	valor double
 	numero_parcela integer
 	data_aprovado date
+	paid bool
+    date_paid date
 }
 
 histórico_débito {
@@ -92,9 +94,10 @@ chaves_pix {
 }
 
 método_pagamento {
-	tipo_método varchar
 	id integer pk increments
+	tipo_método varchar
 	FK_idPix integer null > chaves_pix.id
 	FK_idCartão integer null > cartões.id
+	date_approved date
 }
 

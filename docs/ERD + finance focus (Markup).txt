@@ -13,6 +13,15 @@ Clientes {
 	FK_idEndereço integer > Endereços.id
 }
 
+Emissor {
+	id integer pk increments unique
+	nome varchar
+	CNPJ varchar
+	data_aprovado date
+	ativo bool
+	data_desativado date null
+}
+
 Ofertas_investimento {
 	id integer pk increments unique
 	FK_idEmissor integer *> Emissor.id
@@ -24,7 +33,7 @@ Ofertas_investimento {
 	quantidade_meses_expiração integer
 	data_aprovação date
 	ativo bool
-	data_desativado integer
+	data_desativado date
 }
 
 Ofertas_empréstimo {
@@ -77,20 +86,11 @@ Tipo_Investimento {
 	id integer pk increments unique
 	nome varchar
 	tipo varchar def(FIXED)
-	date_approved date
+	data_aprovado date
 }
 
 Tipo_Empréstimo {
 	id integer pk increments unique
 	nome varchar
-	date_approved date
-}
-
-Emissor {
-	id integer pk increments unique
-	nome integer
-	CNPJ integer
-	date_approved date
-	active bool
-	date_deactivated date null
+	data_aprovado date
 }
