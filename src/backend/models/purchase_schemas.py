@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class Payment_methods(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
-    type_payment: TypeMethodPayment = Field(default=TypeMethodPayment.DEBIT, nullable=False)
+    method: TypeMethodPayment = Field(default=TypeMethodPayment.DEBIT, nullable=False)
     
     FK_idPix: Optional[int] = Field(foreign_key="pix_keys.id")
     FK_idCard: Optional[int] = Field(foreign_key="cards.id")
@@ -43,7 +43,7 @@ class Credit_contracts(SQLModel, table=True):
     CPF_receiver: Optional[str]
     CNPJ_receiver: Optional[str]
     value: Decimal
-    fiscal_note_number: str
+    fiscal_note_number: Optional[str] #* default to generating it
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
     paid: bool = Field(default=False)
     date_paid: Optional[datetime]
