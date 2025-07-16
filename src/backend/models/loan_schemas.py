@@ -7,7 +7,7 @@ from sqlmodel import SQLModel, Field, Relationship
 if TYPE_CHECKING:
     from backend.models.main_schemas import Clients, Emitters
 
-#Loans
+#* Loans
 class Type_Loan(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
     name: str

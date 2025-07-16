@@ -6,6 +6,9 @@ class stringableEnum(str, Enum):
         return cls(value.lower())
 
 class ProfitIndex(stringableEnum):
+    """
+    Demonstrating Types of Investments
+    """
     FIXED = "fixed"
     FLOATING = "floating"
     HYBRID = "hybrid"
@@ -26,7 +29,18 @@ class TypeMethodPayment(stringableEnum):
     PIX = "pix"
     CARD = "card"
     VIRTUAL_CARD = "virtual"
-    
+    DEBIT = "debit"
+
+class TypeCard(stringableEnum):
+    PHYISICAL = "physical"
+    VIRTUAL = "virtual"
+
+class TypePixKey(stringableEnum):
+    CPF = "cpf"
+    CNPJ = "cnpj"
+    EMAIL = "email"
+    PHONE_NUMBER = "phone_number"
+    RANDOM = "random"
 
 if __name__ == "__main__":
     i = ProfitIndex.from_str("floating")
