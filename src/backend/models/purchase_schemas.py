@@ -6,7 +6,7 @@ from sqlmodel import SQLModel, Field, Relationship, UniqueConstraint
 
 from backend.models.utils.enums import TypePayment, TypeMethodPayment
 if TYPE_CHECKING:
-    from backend.models.main_schemas import Clients, Emitters, Pix_keys, Cards
+    from backend.models.main_schemas import Clients, Emitters, Client_Pix_keys, Client_Cards
 
 #* Debit and Credit payments
 
@@ -14,12 +14,12 @@ class Payment_methods(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
     method: TypeMethodPayment = Field(default=TypeMethodPayment.DEBIT, nullable=False)
     
-    FK_idPix: Optional[int] = Field(foreign_key="pix_keys.id")
-    FK_idCard: Optional[int] = Field(foreign_key="cards.id")
+    FK_idPix: Optional[int] = Field(foreign_key="client_pix_keys.id")
+    FK_idCard: Optional[int] = Field(foreign_key="client_cards.id")
 
     #pix, card
-    pix_key: Optional['Pix_keys'] = Relationship(back_populates="payment_methods")
-    card: Optional['Cards'] = Relationship(back_populates="payment_methods")
+    pix_key: Optional['Client_Pix_keys'] = Relationship(back_populates="payment_methods")
+    card: Optional['Client_Cards'] = Relationship(back_populates="payment_methods")
     debit_purchases: List['Debit_historic'] = Relationship(back_populates="method_payment")
     credit_contracts: List['Credit_contracts'] = Relationship(back_populates="method_payment")
 
@@ -67,7 +67,7 @@ class Credit_billings(SQLModel, table=True):
     paid: bool = Field(default=False)
     date_paid: Optional[datetime]
 
-    FK_idCliente: int = Field(foreign_key="clients.id")
+    FK_idClient: int = Field(foreign_key="clients.id")
     FK_idCreditContract: int = Field(foreign_key="credit_contracts.id")
 
     client: 'Clients' = Relationship(back_populates="credit_billings")

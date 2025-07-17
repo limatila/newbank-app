@@ -32,8 +32,8 @@ class Clients(SQLModel, table=True):
 
     #Relationships
     address: Optional['Client_Addresses'] = Relationship(back_populates="client")
-    cards: List['Cards'] = Relationship(back_populates="client")
-    pix_keys: List['Pix_keys'] = Relationship(back_populates="client")
+    cards: List['Client_Cards'] = Relationship(back_populates="client")
+    pix_keys: List['Client_Pix_keys'] = Relationship(back_populates="client")
     debit_purchases: List['Debit_historic'] = Relationship(back_populates="client")
     credit_contracts: List['Credit_contracts'] = Relationship(back_populates="client")
     credit_billings: List['Credit_billings'] = Relationship(back_populates="client")
@@ -70,28 +70,28 @@ class Emitters(SQLModel, table=True):
 
     __table_args__ = (UniqueConstraint("CNPJ"), )
 
-class Cards(SQLModel, table=True):
+class Client_Cards(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
     digits: str
     date_expires: date
     CVV_code: str
     type_card: Optional[TypeCard] = Field(default=TypeCard.PHYSICAL, nullable=False)
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
-    ativo: bool = Field(default=True)
+    active: bool = Field(default=True)
     date_deactivated: Optional[datetime]
 
-    FK_idCliente: int = Field(foreign_key="clients.id")
+    FK_idClient: int = Field(foreign_key="clients.id")
 
     client: Clients = Relationship(back_populates="cards")
     payment_methods: List['Payment_methods'] = Relationship(back_populates="card")
 
-class Pix_keys(SQLModel, table=True):
+class Client_Pix_keys(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
     type_key: TypePixKey
     key: str
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
 
-    FK_idCliente: int = Field(foreign_key="clients.id")
+    FK_idClient: int = Field(foreign_key="clients.id")
 
     client: Clients = Relationship(back_populates="pix_keys")
     payment_methods: List['Payment_methods'] = Relationship(back_populates="pix_key")

@@ -8,8 +8,8 @@ from .investment_schemas import *
 __all__: list[str] = [
     "Clients",
     "Client_Addresses",
-    "Cards",
-    "Pix_keys",
+    "Client_Cards",
+    "Client_Pix_keys",
     "Emitters",
     "Payment_methods",
     "Debit_historic",
