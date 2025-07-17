@@ -6,6 +6,7 @@ from datetime import datetime
 
 from sqlmodel import SQLModel, Field, Relationship
 from sqlmodel import UniqueConstraint
+SQLModel.metadata.clear() #clear first
 
 from backend.models.utils.enums import TypeCard, TypePixKey
 #oficial SQLModel's turn around to avoid circular imports
@@ -14,7 +15,6 @@ if TYPE_CHECKING:
     from backend.models.loan_schemas import Loan_contracts, Loan_offers
     from backend.models.purchase_schemas import Credit_contracts, Credit_invoices, Credit_billings, Debit_historic, Payment_methods
 
-SQLModel.metadata.clear() #clear first
 
 #* Main entitys and stakeholder info
 class Clients(SQLModel, table=True):
