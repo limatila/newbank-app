@@ -7,6 +7,9 @@ alembic
 psycopg2
 dotenv
 
+#service dependencies
+python-dateutil
+
 #front - web
 jinja2
 
