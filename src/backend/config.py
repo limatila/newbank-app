@@ -22,3 +22,6 @@ if DEBUG_MODE: print(env)
 
 #Credit Card 
 CARD_PREFIX = env.get('CARD_PREFIX', "5432") #your card identifier
+
+#Pix
+RANDOM_KEY_POSFIX = env.get('PIX_POSFIX', "") #posfix for generating random pix keys
