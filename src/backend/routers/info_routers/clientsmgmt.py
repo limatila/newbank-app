@@ -5,9 +5,12 @@ from sqlmodel import Session
 from backend.dependencies.connections import get_db_session
 from backend.services.infomgmt.clientsmgmt import (
     register_new_client,
+    register_new_client_card,
+    register_new_client_pix_key,
     load_client_by_CNPJ,
     load_client_by_CPF,
     load_client_address,
+    load_client_pix_key,
 )
 from backend.routers.utils.input_checkers import (
     transform_document_to_digits,
@@ -41,6 +44,37 @@ def new_client(name: str, address: str, address_number: str, complement: str, di
         return {"result": "sucess"}
     else: return {"result": "failure"}
 
+@clients_router.post("/new-card", summary="Register a new card for the client. The default card type is Phyisical, which is allowed 1 per client")
+def new_client_card(CNPJ: str = None, CPF: str = None, cardType: str = "physical", session: Session = Depends(get_db_session)):
+    if not CPF and not CNPJ:
+        raise HTTPException(detail="Newbank's Clients operations needs CNPJ or CPF.", status_code=403)
+
+    if CNPJ and not check_CNPJ_length(CNPJ):
+        raise HTTPException(detail=f"CNPJ is not valid, please assure it's {CNPJ_OFICIAL_LENGTH} characters long.", status_code=400)
+    if CPF and not check_CPF_length(CPF):
+        raise HTTPException(detail=f"CPF is not valid, please assure it's {CPF_OFICIAL_LENGTH} characters long.", status_code=400)
+
+    result = register_new_client_card(session, CNPJ, CPF, cardType)
+    
+    if result:
+        return {"result": "sucess"}
+    else: return {"result": "failure"}
+
+@clients_router.post("/new-pix", summary="Register a new card for the client. The default card type is random. 1 type of key is allowed per client")
+def new_client_pix_key(key: str, CNPJ: str = None, CPF: str = None, pixType: str = "random", session: Session = Depends(get_db_session)):
+    if not CPF and not CNPJ:
+        raise HTTPException(detail="Newbank's Clients operations needs CNPJ or CPF.", status_code=403)
+
+    if CNPJ and not check_CNPJ_length(CNPJ):
+        raise HTTPException(detail=f"CNPJ is not valid, please assure it's {CNPJ_OFICIAL_LENGTH} characters long.", status_code=400)
+    if CPF and not check_CPF_length(CPF):
+        raise HTTPException(detail=f"CPF is not valid, please assure it's {CPF_OFICIAL_LENGTH} characters long.", status_code=400)
+
+    result = register_new_client_pix_key(session, key, CNPJ, CPF, pixType)
+    
+    if result:
+        return {"result": "sucess"}
+    else: return {"result": "failure"}
 
 #GET
 @clients_router.get("/load/CNPJ/{CNPJ_number}")
