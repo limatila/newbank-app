@@ -1,6 +1,6 @@
 from typing import Optional, List, TYPE_CHECKING
 from decimal import Decimal
-from datetime import datetime
+from datetime import date, datetime
 
 from sqlmodel import SQLModel, Field, Relationship
 
@@ -29,12 +29,11 @@ class Loan_offers(SQLModel, table=True):
 
     type_loan: Optional['Type_Loan'] = Relationship(back_populates="offers")
     emitter: 'Emitters' = Relationship(back_populates="loan_offers")
-    loan_contracts: List['Loan_contracts'] = Relationship(back_populates="Loan_offer")
+    loan_contracts: List['Loan_contracts'] = Relationship(back_populates="loan_offer")
 
 class Loan_contracts(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
     value: Decimal
-    date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
     installment_quantity: int = Field(default=1, nullable=False, ge=1)
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
     paid: bool = Field(default=False)
@@ -54,7 +53,7 @@ class Loan_invoices(SQLModel, table=True):
     installment_number: int = Field(ge=1)
     value: Decimal
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
-    date_due: datetime = Field(nullable=False)
+    date_due: date = Field(nullable=False)
     paid: bool = Field(default=True)
     date_paid: Optional[datetime]
 

@@ -1,6 +1,6 @@
 from typing import Optional, List, TYPE_CHECKING
 from decimal import Decimal
-from datetime import datetime
+from datetime import date, datetime
 
 from sqlmodel import SQLModel, Field, Relationship
 
@@ -39,7 +39,7 @@ class Investment_contracts(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
     gross_applied_value: Decimal
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
-    date_expiration: datetime = Field(nullable=False)
+    date_expiration: date = Field(nullable=False)
     active: bool = Field(default=True)
     date_deactivated: Optional[datetime]
 

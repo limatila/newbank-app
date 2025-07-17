@@ -1,6 +1,6 @@
 from typing import Optional, List, TYPE_CHECKING
 from decimal import Decimal
-from datetime import datetime
+from datetime import date, datetime
 
 from sqlmodel import SQLModel, Field, Relationship, UniqueConstraint
 
@@ -20,12 +20,12 @@ class Payment_methods(SQLModel, table=True):
     #pix, card
     pix_key: Optional['Pix_keys'] = Relationship(back_populates="payment_methods")
     card: Optional['Cards'] = Relationship(back_populates="payment_methods")
-    debit_purchases: List['Debit_historic'] = Relationship(back_populates="client")
-    credit_contracts: List['Credit_contracts'] = Relationship(back_populates="credit_contracts")
+    debit_purchases: List['Debit_historic'] = Relationship(back_populates="method_payment")
+    credit_contracts: List['Credit_contracts'] = Relationship(back_populates="method_payment")
 
 class Debit_historic(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
-    type_payment: TypePayment = Field(default=TypeMethodPayment.DEBIT)
+    type_payment: TypePayment = Field(default=TypePayment.INVOICE)
     CPF_receiver: Optional[str]
     CNPJ_receiver: Optional[str]
     value: Decimal
@@ -34,12 +34,12 @@ class Debit_historic(SQLModel, table=True):
     FK_idClient: int = Field(foreign_key="clients.id")
     FK_idMethodPayment: int = Field(foreign_key="payment_methods.id")
 
-    client: 'Clients' = Relationship(back_populates="debit_registrys")
-    method_payment: 'Payment_methods' = Relationship(back_populates="credit_contracts")
+    client: 'Clients' = Relationship(back_populates="debit_purchases")
+    method_payment: 'Payment_methods' = Relationship(back_populates="debit_purchases")
 
 class Credit_contracts(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
-    type_payment: TypePayment = Field(default=TypeMethodPayment.CARD)
+    type_payment: TypePayment = Field(default=TypePayment.INVOICE)
     CPF_receiver: Optional[str]
     CNPJ_receiver: Optional[str]
     value: Decimal
@@ -79,9 +79,9 @@ class Credit_invoices(SQLModel, table=True):
     bar_code: str
     pix_code: str
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
-    date_reference: datetime
-    date_closure: datetime
-    date_due: datetime
+    date_reference: date
+    date_closure: date
+    date_due: date
     paid: bool
     date_paid: Optional[datetime]
 

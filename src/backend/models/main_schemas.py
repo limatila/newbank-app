@@ -1,8 +1,6 @@
-from __future__ import annotations;
-
 from typing import List, Optional, TYPE_CHECKING
 from decimal import Decimal
-from datetime import datetime
+from datetime import date, datetime
 
 from sqlmodel import SQLModel, Field, Relationship
 from sqlmodel import UniqueConstraint
@@ -25,7 +23,7 @@ class Clients(SQLModel, table=True):
     debit_balance: Decimal = Field(default=0, ge=0)
     credit_balance: Decimal = Field(default=0)
     score: int = Field(default=500, ge=1, le=1000)
-    card_default_date_closure: Optional[datetime]
+    card_default_date_closure: Optional[str]
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
     active: bool = Field(default=True)
     date_deactivated: Optional[datetime]
@@ -56,7 +54,7 @@ class Client_Addresses(SQLModel, table=True):
     CEP: Optional[str]
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
 
-    client: 'Clients' = Relationship(back_populates="address")
+    client: Optional['Clients'] = Relationship(back_populates="address")
 
 class Emitters(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
@@ -75,7 +73,7 @@ class Emitters(SQLModel, table=True):
 class Cards(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
     digits: str
-    date_expires: datetime
+    date_expires: date
     CVV_code: str
     type_card: Optional[TypeCard] = Field(default=TypeCard.PHYSICAL, nullable=False)
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
