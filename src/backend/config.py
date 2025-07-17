@@ -19,3 +19,6 @@ SQLITE_CONNECTION_STRING = f"sqlite:///{env.get('SQLITE_FILE', "db.sqlite")}"
 PGSQL_CONNECTION_STRING = f"postgresql+psycopg2://{env.get('PG_USER', "root")}:{env.get('PG_PASSWORD', "1234")}@{env.get('PG_HOST', "localhost")}:{env.get('PG_PORT', "5432")}/{env.get('PG_DBNAME', "newbank")}"
 
 if DEBUG_MODE: print(env)
+
+#Credit Card 
+CARD_PREFIX = env.get('CARD_PREFIX', "5432") #your card identifier

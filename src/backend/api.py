@@ -9,7 +9,7 @@ from backend.routers.info_routers import (
 )
 
 #Instance
-api = FastAPI(title="NewBank API", version="0.1", summary="API for interacting with NewBank's main database.")
+api = FastAPI(title="NewBank API", version="0.3", summary="API for interacting with NewBank's main database.")
 
 
 #Routers
