@@ -35,6 +35,9 @@ def new_client(name: str, address: str, address_number: str, complement: str, di
     
     if not CEP and not zip_code:
         raise HTTPException(detail="Newbank's Clients needs CEP or Zip Code.", status_code=403)
+    elif CEP and zip_code: 
+        raise HTTPException(detail="Newbank's Clients operations needs CEP or Zip Code. Please use only ONE code.", status_code=403)
+
 
     if CNPJ:
         CNPJ = transform_document_to_digits(CNPJ, 'CNPJ')
@@ -195,3 +198,4 @@ def get_client_pix_key(CNPJ: str = None, CPF: str = None, type_pix: str = "rando
     if result:
         return result
     else: raise HTTPException(detail="No client address was found with this CNPJ.", status_code=404)
+
