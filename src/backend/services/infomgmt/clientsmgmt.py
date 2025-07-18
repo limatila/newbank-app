@@ -1,3 +1,4 @@
+from sqlmodel import Sequence
 from fastapi import HTTPException
 from sqlmodel import Session, func, select
 from sqlalchemy.exc import IntegrityError 
@@ -61,7 +62,7 @@ def register_new_client_card(session: Session, CNPJ: str = None, CPF: str = None
     newCVV_code = generate_new_card_CVV_code()
 
     try:
-        attributedType = TypeCard.from_str(type_card) #! what about a wrong type insertion?
+        attributedType = TypeCard.from_str(type_card)
     except ValueError:
         raise HTTPException(detail="No type of key is associated to the sent pix type.", status_code=404)
 
@@ -69,6 +70,7 @@ def register_new_client_card(session: Session, CNPJ: str = None, CPF: str = None
     #limit card quantity(1 phyisical, 5 virtual -- per client)
     stmt = select(func.count()).select_from(Client_Cards) \
             .join(Clients, Clients.id == Client_Cards.FK_idClient) \
+            .where(Clients.id == client.id) \
             .where(Client_Cards.type_card == attributedType)
     countCards: int | None = session.exec(stmt).one_or_none()
     if countCards == None: countCards = 0
@@ -96,6 +98,8 @@ def register_new_client_card(session: Session, CNPJ: str = None, CPF: str = None
     return True if (newCard or result) else False
 
 def register_new_client_pix_key(session: Session, key: str, CNPJ: str = None, CPF: str = None, type_pix: str = "random") -> bool:
+    #TODO: make type_pix not mandatorial, return all registered pix
+    
     if CNPJ:
        client: Clients = load_client_by_CNPJ(CNPJ, session)
     elif CPF: 
@@ -113,6 +117,7 @@ def register_new_client_pix_key(session: Session, key: str, CNPJ: str = None, CP
     #verify no key with same type exists for the client (1 type of each per client)
     stmt = select(Client_Pix_keys) \
             .join(Clients, Clients.id == Client_Pix_keys.FK_idClient) \
+            .where(Clients.id == client.id) \
             .where(Client_Pix_keys.type_key == attributedType)
     keyTypeExists = session.exec(stmt).one_or_none()
     
@@ -158,7 +163,7 @@ def load_client_address(session: Session, CPF: str = None, CNPJ: str = None) -> 
             "client_address": result
         }
 
-def load_client_cards(session: Session, CNPJ: str = None, CPF: str = None, type_card: str = "physical") -> dict[str, int | Client_Cards]:
+def load_client_cards(session: Session, CNPJ: str = None, CPF: str = None, type_card: str = None) -> dict[str, int | Client_Cards]:
     if CNPJ:
        client: Clients = load_client_by_CNPJ(CNPJ, session)
     elif CPF: 
@@ -167,23 +172,36 @@ def load_client_cards(session: Session, CNPJ: str = None, CPF: str = None, type_
 
     if not client: raise HTTPException(detail="No client was found when searching address.", status_code=404)
 
-    attributedType = TypeCard.from_str(type_card)
 
     stmt = select(Client_Cards) \
             .join(Clients, Clients.id == Client_Cards.FK_idClient) \
-            .where(Client_Cards.type_card == attributedType)
-    result = session.exec(stmt).all()
+            .where(Clients.id == client.id) \
+    
+    if type_card:
+        try:
+            attributedType = TypeCard.from_str(type_card)
+        except ValueError:
+            raise HTTPException(detail="No type of key is associated to the sent pix type.", status_code=404)
+        stmt = stmt.where(Client_Cards.type_card == attributedType)
 
-    if not result: raise HTTPException(detail="No card was found for the client and card type.", status_code=404)
+    resultAll = session.exec(stmt).all()
+    if not resultAll: raise HTTPException(detail="No card was found for the client and card type.", status_code=404)
 
     #interpreting before deliver
+    length_result = len(resultAll)
+
+    if not isinstance(resultAll, Client_Cards) and len(resultAll) == 1:
+        resultAll = resultAll[0]
+    
     return {
             "client_id": client.id,
             "client_name": client.name,
-            "client_cards": result
+            f"client_card{'s' if length_result > 1 else ''}": resultAll
         }
 
-def load_client_pix_key(session: Session, CNPJ: str = None, CPF: str = None, type_pix: str = "random") -> dict[str, int | Client_Pix_keys]:
+def load_client_pix_keys(session: Session, CNPJ: str = None, CPF: str = None, type_pix: str = None) -> dict[str, int | Client_Pix_keys]:
+    #TODO: make type_pix not mandatorial, return all registered pix
+
     if CNPJ:
        client: Clients = load_client_by_CNPJ(CNPJ, session)
     elif CPF: 
@@ -191,21 +209,31 @@ def load_client_pix_key(session: Session, CNPJ: str = None, CPF: str = None, typ
     else: raise Exception("Address search needs CNPJ or CPF to work.")
 
     if not client: raise HTTPException(detail="No client was found when searching address.", status_code=404)
-    
-    attributedType = TypePixKey.from_str(type_pix)
 
     stmt = select(Client_Pix_keys) \
             .join(Clients, Clients.id == Client_Pix_keys.FK_idClient) \
-            .where(Client_Pix_keys.type_key == attributedType)
-    result = session.exec(stmt).one_or_none()
+            .where(Clients.id == client.id)
 
-    if not result: raise HTTPException(detail="No pix was found when searching address.", status_code=404)
+    if type_pix:
+        try:
+            attributedType = TypePixKey.from_str(type_pix)
+        except ValueError:
+            raise HTTPException(detail="No type of key is associated to the sent pix type.", status_code=404)
+        stmt = stmt.where(Client_Pix_keys.type_key == attributedType)
+
+    resultAll = session.exec(stmt).all()
+    if not resultAll: raise HTTPException(detail="No card was found for the client and card type.", status_code=404)
 
     #interpreting before deliver
+    length_result = len(resultAll)
+
+    if not isinstance(resultAll, Client_Pix_keys) and len(resultAll) == 1:
+        resultAll = resultAll[0]
+    
     return {
             "client_id": client.id,
             "client_name": client.name,
-            "client_pix_key": result
+            f"client_pix_key{'s' if length_result > 1 else ''}": resultAll
         }
 
 

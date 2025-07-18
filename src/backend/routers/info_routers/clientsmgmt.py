@@ -10,7 +10,7 @@ from backend.services.infomgmt.clientsmgmt import (
     load_client_by_CNPJ,
     load_client_by_CPF,
     load_client_address,
-    load_client_pix_key,
+    load_client_pix_keys,
     load_client_cards,
 )
 from backend.routers.utils.input_checkers import (
@@ -154,7 +154,7 @@ def get_client_address_with_CNPJ_or_CPF(CNPJ: str = None, CPF: str = None, sessi
     else: raise HTTPException(detail="No client address was found with this CNPJ.", status_code=404)
 
 @clients_router.get("/load/cards")
-def get_client_cards(CNPJ: str = None, CPF: str = None, type_card: str = "physical", session: Session = Depends(get_db_session)):
+def get_client_cards(CNPJ: str = None, CPF: str = None, type_card: str = None, session: Session = Depends(get_db_session)):
     if not CPF and not CNPJ:
         raise HTTPException(detail="Newbank's Clients operations needs CNPJ or CPF.", status_code=403)
     elif CPF and CNPJ: 
@@ -177,7 +177,7 @@ def get_client_cards(CNPJ: str = None, CPF: str = None, type_card: str = "physic
     else: raise HTTPException(detail="No client address was found with this CNPJ.", status_code=404)
     
 @clients_router.get("/load/pix_key")
-def get_client_pix_key(CNPJ: str = None, CPF: str = None, type_pix: str = "random", session: Session = Depends(get_db_session)):
+def get_client_pix_keys(CNPJ: str = None, CPF: str = None, type_pix: str = None, session: Session = Depends(get_db_session)):
     if not CPF and not CNPJ:
         raise HTTPException(detail="Newbank's Clients operations needs CNPJ or CPF.", status_code=403)
     elif CPF and CNPJ: 
@@ -193,7 +193,7 @@ def get_client_pix_key(CNPJ: str = None, CPF: str = None, type_pix: str = "rando
     if CPF and not check_CPF_length(CPF):
         raise HTTPException(detail=f"CPF is not valid, please assure it's {CPF_OFICIAL_LENGTH} characters long.", status_code=400)
 
-    result = load_client_pix_key(session, CNPJ, CPF, type_pix)
+    result = load_client_pix_keys(session, CNPJ, CPF, type_pix)
 
     if result:
         return result
