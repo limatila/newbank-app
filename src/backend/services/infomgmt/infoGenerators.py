@@ -1,9 +1,10 @@
 import secrets
 import re
+import uuid
 from datetime import date
 from dateutil.relativedelta import relativedelta
 
-from backend.config import CARD_PREFIX
+from backend.config import CARD_PREFIX, RANDOM_KEY_POSFIX
 
 CARD_DIGITS_LENGTH: int = 16
 CARD_CVV_LENGTH: int = 3
@@ -56,6 +57,8 @@ def generate_new_credit_balance(CNPJ: str = None, CPF: str = None) -> float:
     new_credit = secrets.randbelow(len(CNPJ if CNPJ else CPF)) / 2.15
     return new_credit * 100
 
+def generate_random_pix_key(_bin_posfix = RANDOM_KEY_POSFIX) -> str:
+    return uuid.uuid4().__str__() + _bin_posfix
 
 if __name__ == "__main__":
     print(generate_new_card_digits())

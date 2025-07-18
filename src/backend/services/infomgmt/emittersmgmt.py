@@ -21,3 +21,7 @@ def register_new_emitter(CNPJ: str, name: str, session: Session, active: bool = 
 def load_emitter_by_CNPJ(CNPJ: str, session: Session):
     stmt = select(Emitters).where(Emitters.CNPJ == CNPJ)
     return session.exec(stmt).one_or_none()
+
+
+#Alters #TODO
+def change_emitter_active_status(session: Session, newStatus: bool, CNPJ: str): ...
