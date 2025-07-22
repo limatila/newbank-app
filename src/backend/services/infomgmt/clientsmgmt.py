@@ -263,7 +263,7 @@ def change_client_active_status(session: Session, newStatus: bool, CNPJ: str = N
         session.commit()
 
     result = {
-        "result": "sucess",
+        "result": "success",
     }
     if wasEqualStatus: result.update({"detail": f"Client was already at state {'active' if newStatus else 'deactivated'}"})
     if wasDeactivated: result.update({"date_deactivated": client.date_deactivated})
@@ -331,7 +331,7 @@ def deactivate_client_card(session: Session, card_digits: str, card_expiration: 
         session.commit()
 
     result = {
-        "result": "sucess",
+        "result": "success",
     }
     if wasDeactivatedStatus: result.update({"detail": f"Card was already at state deactivated"})
     result.update({"date_deactivated": client_card.date_deactivated})
@@ -353,7 +353,7 @@ def delete_client_pix_key(session: Session, type_pix: str, CNPJ: str = None, CPF
     session.commit()
 
     return {
-        "result": "sucess",
+        "result": "success",
         "type_deleted": pix_key.type_key,
         "key_deleted": pix_key.key
     }

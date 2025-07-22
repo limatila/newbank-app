@@ -27,7 +27,7 @@ def new_client(CNPJ: str, name: str, active: bool = True, session: Session = Dep
     result: bool = register_new_emitter(CNPJ, name, active=active, session=session)
 
     if result:
-        return {"result": "sucess"}
+        return {"result": "success"}
     else: return {"result": "failure"}
 
 

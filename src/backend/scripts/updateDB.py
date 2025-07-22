@@ -24,7 +24,7 @@ if result == 0:
 if result == 0 and result_2 == 0:
     with open('migration-history.log', 'a') as file:
         now = datetime.datetime.now()
-        file.write(f"\n[{now}] -- Migration sucessfull: {migrationMessage}")
+        file.write(f"\n[{now}] -- Migration successfull: {migrationMessage}")
 elif result == 0 and result_2 == -10:
     with open('migration-history.log', 'a') as file:
         now = datetime.datetime.now()

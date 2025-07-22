@@ -51,7 +51,7 @@ def change_emitter_active_status(session: Session, newStatus: bool, CNPJ: str):
         session.commit()
 
     result = {
-        "result": "sucess",
+        "result": "success",
     }
     if wasEqualStatus: result.update({"detail": f"Emitter was already at state {'active' if newStatus else 'deactivated'}"})
     if wasDeactivated: result.update({"date_deactivated": emitter.date_deactivated})

@@ -59,7 +59,7 @@ def new_client(name: str, address: str, address_number: str, complement: str, di
                                     district, zip_code, CEP, active=active, session=session)
 
     if result:
-        return {"result": "sucess"}
+        return {"result": "success"}
     else: return {"result": "failure"}
 
 @clients_router.post("/new/card", summary="Register a new card for the client. The default card type is Phyisical, which is allowed 1 per client")
@@ -82,7 +82,7 @@ def new_client_card(CNPJ: str = None, CPF: str = None, cardType: str = "physical
     result = register_new_client_card(session, CNPJ, CPF, cardType)
 
     if result:
-        return {"result": "sucess"}
+        return {"result": "success"}
     else: return {"result": "failure"}
 
 @clients_router.post("/new/pix_key", summary="Register a new Pix key for the client. The default key type is random. 1 type of key is allowed per client")
@@ -105,7 +105,7 @@ def new_client_pix_key(key: str, CNPJ: str = None, CPF: str = None, type_pix: st
     result = register_new_client_pix_key(session, key, CNPJ, CPF, type_pix)
 
     if result:
-        return {"result": "sucess"}
+        return {"result": "success"}
     else: return {"result": "failure"}
 
 
@@ -226,7 +226,7 @@ def alter_client_address(address: str, address_number: str, complement: str, dis
     result = change_client_address(session, address, address_number, complement, district, zip_code, CEP, CNPJ, CPF)
 
     if result:
-        return {"result": "sucess"}
+        return {"result": "success"}
     else: return {"result": "failure"}
 
 @clients_router.put("/alter/card-deactivation")
