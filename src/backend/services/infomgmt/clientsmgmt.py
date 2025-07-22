@@ -223,7 +223,7 @@ def load_client_pix_keys(session: Session, CNPJ: str = None, CPF: str = None, ty
         stmt = stmt.where(Client_Pix_keys.type_key == attributedType)
 
     resultAll = session.exec(stmt).all()
-    if not resultAll: raise HTTPException(detail="No pix key was found for the client and pix type.", status_code=404)
+    if not resultAll: raise HTTPException(detail=f"No pix key was found for the client{" and pix type." if type_pix else '.'}", status_code=404)
 
     #interpreting before deliver
     if not isinstance(resultAll, Client_Pix_keys) and len(resultAll) == 1:
@@ -237,12 +237,14 @@ def load_client_pix_keys(session: Session, CNPJ: str = None, CPF: str = None, ty
 
 
 # Alters
-def change_client_active_status(session: Session, newStatus: bool, CPF: str = None, CNPJ: str = None) -> dict[str, str | datetime]: 
+def change_client_active_status(session: Session, newStatus: bool, CNPJ: str = None, CPF: str = None, ) -> dict[str, str | datetime]: 
     if CNPJ:
        client: Clients = load_client_by_CNPJ(CNPJ, session)
     elif CPF: 
        client: Clients = load_client_by_CPF(CPF, session)
     else: raise Exception("Client status change needs CNPJ or CPF of a client.")
+
+    wasDeactivated, wasEqualStatus = (False, False)
 
     #modeling response
     if newStatus == client.active:
@@ -256,8 +258,9 @@ def change_client_active_status(session: Session, newStatus: bool, CPF: str = No
         client.date_deactivated = newDeactivationDate
         wasDeactivated = True
 
-    session.add(client)
-    session.commit(client)
+    if not wasEqualStatus:
+        session.add(client)
+        session.commit()
 
     result = {
         "result": "sucess",
@@ -267,8 +270,8 @@ def change_client_active_status(session: Session, newStatus: bool, CPF: str = No
 
     return result
 
-def change_client_address(CNPJ: str, CPF: str, address: str, address_number: str, complement: str, 
-                        district: str, zip_code: str, CEP: str, session: Session) -> bool:
+def change_client_address(session: Session, address: str, address_number: str, complement: str, district: str, 
+                            zip_code: str = None, CEP: str = None, CNPJ: str = None, CPF: str = None) -> bool:
     if CNPJ:
        client: Clients = load_client_by_CNPJ(CNPJ, session)
     elif CPF: 
@@ -301,48 +304,41 @@ def change_client_address(CNPJ: str, CPF: str, address: str, address_number: str
 
     return True if client else False
 
-def deactivate_client_card(session: Session, card_digits: str, card_expiration: date, card_CVV: str, CPF: str = None, CNPJ: str = None) -> dict[str, str | datetime]:
-    if CNPJ or CPF:
-       client_card_results = load_client_cards(session, CNPJ, CPF)
-    elif not CNPJ and not CPF: raise Exception("Client' card deactivation needs CNPJ or CPF of a client.")
+def deactivate_client_card(session: Session, card_digits: str, card_expiration: date, card_CVV: str, CNPJ: str = None, CPF: str = None) -> dict[str, str | datetime]:
+    if not CNPJ and not CPF: raise Exception("Client' card deactivation needs CNPJ or CPF of a client.")
 
-    #search card from client
-    client_cards: Sequence[Client_Cards] = client_card_results.get("client_cards", None)
-    if client_cards:
-        for card in client_cards:
-            if (card.digits == card_digits
-                and card.date_expires == card_expiration.replace(day=1)
-                and card.CVV_code == card_CVV):
-                client_card: Client_Cards = card
-    else:
-        raise Exception("Client card query didn't go find correct key in client_card_results")
+    stmt = select(Client_Cards) \
+            .where(Client_Cards.digits == card_digits) \
+            .where(Client_Cards.date_expires == card_expiration) \
+            .where(Client_Cards.CVV_code == card_CVV)
+    client_card = session.exec(stmt).one_or_none()
 
-    if not client_card: 
-        raise HTTPException(detail="No client card was found for the sent document.", status_code=404)
+    if not client_card: raise HTTPException(detail="No client card was found for this card data", status_code=404)
 
-    #modeling response
+    wasDeactivatedStatus = False
+
     if False == client_card.active:
+        #modeling response
         wasDeactivatedStatus = True
     else:
         #adding deactivation date
         newDeactivationDate = datetime.now() 
         client_card.date_deactivated = newDeactivationDate
-        wasDeactivated = True
 
         #alter it
         client_card.active = False
         session.add(client_card)
-        session.commit(client_card)
+        session.commit()
 
     result = {
         "result": "sucess",
     }
-    if wasDeactivatedStatus: result.update({"detail": f"Client was already at state deactivated"})
-    if wasDeactivated: result.update({"date_deactivated": client_card.date_deactivated})
+    if wasDeactivatedStatus: result.update({"detail": f"Card was already at state deactivated"})
+    result.update({"date_deactivated": client_card.date_deactivated})
 
     return result
 
-def delete_client_pix_key(session: Session, type_pix: str, CPF: str = None, CNPJ: str = None) -> dict[str, str | TypePixKey]:
+def delete_client_pix_key(session: Session, type_pix: str, CNPJ: str = None, CPF: str = None) -> dict[str, str | TypePixKey]:
     if CNPJ or CPF:
        client_pix_key_results = load_client_pix_keys(session, CNPJ, CPF, type_pix)
     elif not CNPJ and not CPF: raise Exception("Client pix key deletion operation needs CNPJ or CPF of a client.")
@@ -362,4 +358,4 @@ def delete_client_pix_key(session: Session, type_pix: str, CPF: str = None, CNPJ
         "key_deleted": pix_key.key
     }
 
-#TODO: add routes, test
+#TODO: add routes, test, review arg positions

@@ -3,7 +3,7 @@ from fastapi import FastAPI
 
 from backend.scripts.createDB import create_schema_in_first_startup
 from backend.routers import redirections, webhooks
-from backend.routers.info_routers import (
+from backend.routers.inforouters import (
     clientsmgmt,
     emittersmgmt
 )

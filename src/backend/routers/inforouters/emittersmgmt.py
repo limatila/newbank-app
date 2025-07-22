@@ -13,7 +13,7 @@ from backend.routers.utils.input_checkers import (
     CNPJ_OFICIAL_LENGTH,
 )
 
-emitters_router = APIRouter(prefix='/emitters', tags=['Emitter info'])
+emitters_router = APIRouter(prefix='/emitters', tags=['Emitter information'])
 
 #POST
 @emitters_router.post("/new")
