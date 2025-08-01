@@ -38,7 +38,7 @@ services:
     build: 
       dockerfile: Dockerfile.pushed
       context: .
-    restart: unless-stopped
+    restart: always
     ports:
       - "8043:8080"
     volumes:

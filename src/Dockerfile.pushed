@@ -16,11 +16,11 @@ WORKDIR /usr/app
 RUN git clone https://github.com/limatila/newbank-app . && \
     git checkout main
 
-# Install dependencies from repo root
-RUN pip install --no-cache-dir -r requirements.txt
-
 # Set working directory to src/
 WORKDIR /usr/app/src
+
+# Install dependencies from repo root
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Default command (optional override in docker-compose)
 CMD ["uvicorn", "backend.api:api", "--host", "0.0.0.0", "--port", "8080"]
