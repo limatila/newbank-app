@@ -34,6 +34,7 @@ clients_router = APIRouter(prefix='/clients', tags=['Client information'])
 @clients_router.post("/new")
 def new_client(name: str, address: str, address_number: str, complement: str, district: str,
                     CNPJ: str = None, CPF: str = None, zip_code: str = None, CEP: str = None, active: bool = True,
+                    new_card_day_closure: int = 1,
                     session: Session = Depends(get_db_session)):
     if not CPF and not CNPJ:
         raise HTTPException(detail="Newbank's Clients operations needs CNPJ or CPF.", status_code=403)
@@ -55,8 +56,11 @@ def new_client(name: str, address: str, address_number: str, complement: str, di
     if CPF and not check_CPF_length(CPF):
         raise HTTPException(detail=f"CPF is not valid, please assure it's {CPF_OFICIAL_LENGTH} characters long.", status_code=400)
 
+    if new_card_day_closure > 31 or new_card_day_closure < 1:
+        raise HTTPException(detail=f"Card closure day is not valid, please choose from day 1 to 31.", status_code=400)
+
     result: bool = register_new_client(CNPJ, CPF, name, address, address_number, complement,
-                                    district, zip_code, CEP, active=active, session=session)
+                                    district, zip_code, CEP, new_card_day_closure=new_card_day_closure, active=active, session=session)
 
     if result:
         return {"result": "success"}

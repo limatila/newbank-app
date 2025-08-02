@@ -18,7 +18,7 @@ from .infoGenerators import (
 
 # Create
 def register_new_client(CNPJ: str, CPF: str, name: str, address: str, address_number: str, complement: str, 
-                        district: str, zip_code: str, CEP: str, session: Session, active: bool = True) -> bool:    
+                        district: str, zip_code: str, CEP: str, session: Session, new_card_day_closure: int = 1, active: bool = True) -> bool:    
 
     #find duplicate address
     stmt_address = select(Client_Addresses).where(
@@ -41,7 +41,7 @@ def register_new_client(CNPJ: str, CPF: str, name: str, address: str, address_nu
     #register client
     newCredit = generate_new_credit_balance(CNPJ, CPF)
     try:
-        newClient = Clients(CPF=CPF, CNPJ=CNPJ, name=name, active=active, credit_balance=newCredit, FK_idAddress=newAddress.id)
+        newClient = Clients(CPF=CPF, CNPJ=CNPJ, name=name, active=active, credit_balance=newCredit, card_default_day_closure=new_card_day_closure, FK_idAddress=newAddress.id)
         session.add(newClient)
         session.commit()
     except IntegrityError:

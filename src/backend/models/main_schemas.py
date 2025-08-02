@@ -23,7 +23,7 @@ class Clients(SQLModel, table=True):
     debit_balance: Decimal = Field(default=0, ge=0)
     credit_balance: Decimal = Field(default=0)
     score: int = Field(default=500, ge=1, le=1000)
-    card_default_date_closure: Optional[str]
+    card_default_day_closure: Optional[int] = Field(ge=1, le=31)
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
     active: bool = Field(default=True)
     date_deactivated: Optional[datetime]
