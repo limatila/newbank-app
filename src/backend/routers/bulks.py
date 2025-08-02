@@ -9,7 +9,8 @@ from backend.dependencies.connections import get_db_session
 from backend.services.bulkLoaders import (
     load_filtered_data,
     load_ordered_data,
-    load_range_data
+    load_range_data,
+    MODEL_CHOICES,
 )
 from backend.routers.utils.input_checkers import (
     transform_document_to_digits,
@@ -19,13 +20,17 @@ from backend.routers.utils.input_checkers import (
 
 bulk_router = APIRouter(prefix='/bulk', tags=['Bulk management'])
 
-@bulk_router.get("/load/{data_choice}", summary="Load data from any model, choosing a data model, and defining any and every configuration to the query.")
+@bulk_router.get("/load/{data_choice}", 
+                 summary=f"""Load data from any model, choosing a data model, and defining any and every configuration to the query.
+Please choose between: {list(MODEL_CHOICES.keys())}""")
 def get_multiple_data(data_choice: str, filter_option: str = None, filter_value: Any = None,
                             order_option: str = None, order_orientation: str = "ASC",
                             limit: int = 15, offset: int = 0, session: Session = Depends(get_db_session)):
     #validating load_range entrys
     if limit < 0: raise HTTPException("Limit cannot be 0 or negative.", status_code=403)
     if offset < 0: raise HTTPException("Offset cannot be negative.", status_code=403)
+
+    data_choice = data_choice.strip().replace(" ", "_")
 
     result = load_range_data(session, data_choice, limit, offset, 
                                 _return_stmt=(True if (filter_option or order_option) else False))
