@@ -19,8 +19,8 @@ from backend.routers.utils.input_checkers import (
 
 bulk_router = APIRouter(prefix='/bulk', tags=['Bulk management'])
 
-@bulk_router.get("/load/{data_choice}")
-def load_multiple_data(data_choice: str, filter_option: str = None, filter_value: Any = None,
+@bulk_router.get("/load/{data_choice}", summary="Load data from any model, choosing a data model, and defining any and every configuration to the query.")
+def get_multiple_data(data_choice: str, filter_option: str = None, filter_value: Any = None,
                             order_option: str = None, order_orientation: str = "ASC",
                             limit: int = 15, offset: int = 0, session: Session = Depends(get_db_session)):
     #validating load_range entrys
