@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 
 from backend.scripts.createDB import create_schema_in_first_startup
-from backend.routers import redirections, webhooks
+from backend.routers import bulks, redirections, webhooks
 from backend.routers.inforouters import (
     clientsmgmt,
     emittersmgmt
@@ -17,6 +17,7 @@ api.include_router(redirections.redirections_router)
 api.include_router(webhooks.webhooks_router)
 api.include_router(clientsmgmt.clients_router)
 api.include_router(emittersmgmt.emitters_router)
+api.include_router(bulks.bulk_router)
 
 @api.on_event("startup")
 def startup_event():

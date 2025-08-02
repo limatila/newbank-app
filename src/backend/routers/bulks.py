@@ -28,7 +28,7 @@ def load_multiple_data(data_choice: str, filter_option: str = None, filter_value
     if offset < 0: raise HTTPException("Offset cannot be negative.", status_code=403)
 
     result = load_range_data(session, data_choice, limit, offset, 
-                                _return_stmt=(True if filter_option else False))
+                                _return_stmt=(True if (filter_option or order_option) else False))
 
     #filtering
     if filter_option and filter_value:
@@ -50,7 +50,7 @@ def load_multiple_data(data_choice: str, filter_option: str = None, filter_value
                     try:
                         filter_value = int(filter_value)
                     except ValueError:
-                        ...
+                        pass
         except AssertionError:
             raise HTTPException(detail=f"Inserted {filter_option} is not valid. Please certify that the sent document has {CNPJ_OFICIAL_LENGTH if filter_option == "cnpj" else CPF_OFICIAL_LENGTH}", status_code=403) 
 
