@@ -1,0 +1,18 @@
+[project]
+name = "newbank-app"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.18.4",
+    "dotenv>=0.9.9",
+    "fastapi>=0.135.2",
+    "jinja2>=3.1.6",
+    "psycopg2>=2.9.11",
+    "python-dateutil>=2.9.0.post0",
+    "slowapi>=0.1.9",
+    "sqlmodel>=0.0.37",
+    "uvicorn>=0.42.0",
+    "validate-docbr>=1.11.1",
+]
