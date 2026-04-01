@@ -24,7 +24,7 @@ class TypePayment(stringableEnum):
 
 class TypeMethodPayment(stringableEnum):
     """
-    Types of Payment Methods (which client can use)
+    Types of Payment Methods (when client makes a payment)
     """
     PIX = "pix"
     CARD = "card"
