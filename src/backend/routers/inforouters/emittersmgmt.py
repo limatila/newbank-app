@@ -10,7 +10,7 @@ from backend.services.infomgmt.emittersmgmt import (
 )
 from backend.routers.utils.input_checkers import (
     transform_document_to_digits,
-    check_CNPJ_length,
+    check_CNPJ,
     CNPJ_OFICIAL_LENGTH,
 )
 
@@ -21,7 +21,7 @@ emitters_router = APIRouter(prefix='/emitters', tags=['Emitter information'])
 def new_client(CNPJ: str, name: str, active: bool = True, session: Session = Depends(get_db_session)):
     CNPJ = transform_document_to_digits(CNPJ, 'CNPJ')
 
-    if not check_CNPJ_length(CNPJ):
+    if not check_CNPJ(CNPJ):
         raise HTTPException(detail=f"CNPJ is not valid, please assure it's {CNPJ_OFICIAL_LENGTH} characters long.", status_code=400)
 
     result: bool = register_new_emitter(CNPJ, name, active=active, session=session)
@@ -36,7 +36,7 @@ def new_client(CNPJ: str, name: str, active: bool = True, session: Session = Dep
 def get_emitter_by_CNPJ(CNPJ: str, session: Session = Depends(get_db_session)):
     CNPJ = transform_document_to_digits(CNPJ, 'CNPJ')
 
-    if not check_CNPJ_length(CNPJ):
+    if not check_CNPJ(CNPJ):
         raise HTTPException(detail=f"CNPJ is not valid, please assure it's {CNPJ_OFICIAL_LENGTH} characters long.", status_code=400)
 
     result: bool = load_emitter_by_CNPJ(CNPJ, session)
@@ -51,7 +51,7 @@ def get_emitter_by_CNPJ(CNPJ: str, session: Session = Depends(get_db_session)):
 def get_emitter_by_CNPJ(newStatus: bool, CNPJ: str, session: Session = Depends(get_db_session)):
     CNPJ = transform_document_to_digits(CNPJ, 'CNPJ')
 
-    if not check_CNPJ_length(CNPJ):
+    if not check_CNPJ(CNPJ):
         raise HTTPException(detail=f"CNPJ is not valid, please assure it's {CNPJ_OFICIAL_LENGTH} characters long.", status_code=400)
 
     return change_emitter_active_status(session, newStatus, CNPJ)

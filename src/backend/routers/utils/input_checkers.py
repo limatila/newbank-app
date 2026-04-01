@@ -1,23 +1,26 @@
-from pydoc import doc
 import re
+
+from validate_docbr import CPF as CPFValidator, CNPJ as CNPJvalidator
 
 #only numbers.
 CNPJ_OFICIAL_LENGTH = 14
 CPF_OFICIAL_LENGTH = 11
 
-def check_CNPJ_length(CNPJ: str) -> bool:
+def check_CNPJ(CNPJ: str) -> bool:
     """
     Returns:
-        bool: True if correct length (according to it's constant)
+        bool: True if in terms with CNPJ legislation
     """
-    return len(CNPJ) == CNPJ_OFICIAL_LENGTH
+    validator = CNPJvalidator()
+    return validator.validate(CNPJ)
 
-def check_CPF_length(CPF: str) -> bool:
+def check_CPF(CPF: str) -> bool:
     """
     Returns:
-        bool: True if correct length (according to it's constant)
+        bool: True if in terms with CPF legislation
     """
-    return len(CPF) == CPF_OFICIAL_LENGTH
+    validator = CPFValidator()
+    return validator.validate(CPF)
 
 def transform_document_to_digits(entry: str, documentType: str) -> str:
     """
@@ -37,9 +40,9 @@ def transform_document_to_digits(entry: str, documentType: str) -> str:
         assert result.isdigit()
         match(documentType):
             case 'CNPJ':
-                assert len(result) == CNPJ_OFICIAL_LENGTH
+                assert check_CNPJ(entry) == True
             case 'CPF':
-                assert len(result) == CPF_OFICIAL_LENGTH
+                assert check_CPF(entry) == True
             case _:
                 raise AssertionError()
     except AssertionError:

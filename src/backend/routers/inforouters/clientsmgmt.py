@@ -21,8 +21,8 @@ from backend.services.infomgmt.clientsmgmt import (
 )
 from backend.routers.utils.input_checkers import (
     transform_document_to_digits,
-    check_CNPJ_length,
-    check_CPF_length,
+    check_CNPJ,
+    check_CPF,
     CNPJ_OFICIAL_LENGTH,
     CPF_OFICIAL_LENGTH,
 )
@@ -51,9 +51,9 @@ def new_client(name: str, address: str, address_number: str, complement: str, di
     elif CPF:
         CPF = transform_document_to_digits(CPF, 'CPF')
 
-    if CNPJ and not check_CNPJ_length(CNPJ):
+    if CNPJ and not check_CNPJ(CNPJ):
         raise HTTPException(detail=f"CNPJ is not valid, please assure it's {CNPJ_OFICIAL_LENGTH} characters long.", status_code=400)
-    if CPF and not check_CPF_length(CPF):
+    if CPF and not check_CPF(CPF):
         raise HTTPException(detail=f"CPF is not valid, please assure it's {CPF_OFICIAL_LENGTH} characters long.", status_code=400)
 
     if new_card_day_closure > 31 or new_card_day_closure < 1:
@@ -78,9 +78,9 @@ def new_client_card(CNPJ: str = None, CPF: str = None, cardType: str = "physical
     elif CPF:
         CPF = transform_document_to_digits(CPF, 'CPF')
 
-    if CNPJ and not check_CNPJ_length(CNPJ):
+    if CNPJ and not check_CNPJ(CNPJ):
         raise HTTPException(detail=f"CNPJ is not valid, please assure it's {CNPJ_OFICIAL_LENGTH} characters long.", status_code=400)
-    if CPF and not check_CPF_length(CPF):
+    if CPF and not check_CPF(CPF):
         raise HTTPException(detail=f"CPF is not valid, please assure it's {CPF_OFICIAL_LENGTH} characters long.", status_code=400)
 
     result = register_new_client_card(session, CNPJ, CPF, cardType)
@@ -101,9 +101,9 @@ def new_client_pix_key(key: str, CNPJ: str = None, CPF: str = None, type_pix: st
     elif CPF:
         CPF = transform_document_to_digits(CPF, 'CPF')
 
-    if CNPJ and not check_CNPJ_length(CNPJ):
+    if CNPJ and not check_CNPJ(CNPJ):
         raise HTTPException(detail=f"CNPJ is not valid, please assure it's {CNPJ_OFICIAL_LENGTH} characters long.", status_code=400)
-    if CPF and not check_CPF_length(CPF):
+    if CPF and not check_CPF(CPF):
         raise HTTPException(detail=f"CPF is not valid, please assure it's {CPF_OFICIAL_LENGTH} characters long.", status_code=400)
 
     result = register_new_client_pix_key(session, key, CNPJ, CPF, type_pix)
@@ -118,7 +118,7 @@ def new_client_pix_key(key: str, CNPJ: str = None, CPF: str = None, type_pix: st
 def get_client_with_CNPJ(CNPJ: str, session: Session = Depends(get_db_session)):
     CNPJ = transform_document_to_digits(CNPJ, 'CNPJ')
 
-    if not check_CNPJ_length(CNPJ):
+    if not check_CNPJ(CNPJ):
         raise HTTPException(detail=f"CNPJ is not valid, please assure it's {CNPJ_OFICIAL_LENGTH} characters long.", status_code=400)
     
     return load_client_by_CNPJ(CNPJ=CNPJ, session=session)
@@ -127,7 +127,7 @@ def get_client_with_CNPJ(CNPJ: str, session: Session = Depends(get_db_session)):
 def get_client_with_CPF(CPF: str, session: Session = Depends(get_db_session)):
     CPF = transform_document_to_digits(CPF, 'CPF')
 
-    if not check_CPF_length(CPF):
+    if not check_CPF(CPF):
         raise HTTPException(detail=f"CPF is not valid, please assure it's {CPF_OFICIAL_LENGTH} characters long.", status_code=400)
     
     return load_client_by_CPF(CPF=CPF, session=session)
@@ -144,9 +144,9 @@ def get_client_address_with_CNPJ_or_CPF(CNPJ: str = None, CPF: str = None, sessi
     elif CPF:
         CPF = transform_document_to_digits(CPF, 'CPF')
 
-    if CNPJ and not check_CNPJ_length(CNPJ):
+    if CNPJ and not check_CNPJ(CNPJ):
         raise HTTPException(detail=f"CNPJ is not valid, please assure it's {CNPJ_OFICIAL_LENGTH} characters long.", status_code=400)
-    if CPF and not check_CPF_length(CPF):
+    if CPF and not check_CPF(CPF):
         raise HTTPException(detail=f"CPF is not valid, please assure it's {CPF_OFICIAL_LENGTH} characters long.", status_code=400)
 
     return load_client_address(CNPJ=CNPJ, CPF=CPF, session=session)
@@ -163,9 +163,9 @@ def get_client_cards(CNPJ: str = None, CPF: str = None, type_card: str = None, s
     elif CPF:
         CPF = transform_document_to_digits(CPF, 'CPF')
 
-    if CNPJ and not check_CNPJ_length(CNPJ):
+    if CNPJ and not check_CNPJ(CNPJ):
         raise HTTPException(detail=f"CNPJ is not valid, please assure it's {CNPJ_OFICIAL_LENGTH} characters long.", status_code=400)
-    if CPF and not check_CPF_length(CPF):
+    if CPF and not check_CPF(CPF):
         raise HTTPException(detail=f"CPF is not valid, please assure it's {CPF_OFICIAL_LENGTH} characters long.", status_code=400)
 
     return load_client_cards(session, CNPJ, CPF, type_card)
@@ -182,9 +182,9 @@ def get_client_pix_keys(CNPJ: str = None, CPF: str = None, type_pix: str = None,
     elif CPF:
         CPF = transform_document_to_digits(CPF, 'CPF')
 
-    if CNPJ and not check_CNPJ_length(CNPJ):
+    if CNPJ and not check_CNPJ(CNPJ):
         raise HTTPException(detail=f"CNPJ is not valid, please assure it's {CNPJ_OFICIAL_LENGTH} characters long.", status_code=400)
-    if CPF and not check_CPF_length(CPF):
+    if CPF and not check_CPF(CPF):
         raise HTTPException(detail=f"CPF is not valid, please assure it's {CPF_OFICIAL_LENGTH} characters long.", status_code=400)
 
     return load_client_pix_keys(session, CNPJ, CPF, type_pix)
@@ -202,9 +202,9 @@ def alter_client_status(newStatus: bool, CNPJ: str = None, CPF: str = None, sess
     elif CPF:
         CPF = transform_document_to_digits(CPF, 'CPF')
 
-    if CNPJ and not check_CNPJ_length(CNPJ):
+    if CNPJ and not check_CNPJ(CNPJ):
         raise HTTPException(detail=f"CNPJ is not valid, please assure it's {CNPJ_OFICIAL_LENGTH} characters long.", status_code=400)
-    if CPF and not check_CPF_length(CPF):
+    if CPF and not check_CPF(CPF):
         raise HTTPException(detail=f"CPF is not valid, please assure it's {CPF_OFICIAL_LENGTH} characters long.", status_code=400)
 
     return change_client_active_status(session, newStatus, CNPJ, CPF)
@@ -245,9 +245,9 @@ def alter_deactivate_card(card_digits: str, card_expiration: date, card_CVV: str
     elif CPF:
         CPF = transform_document_to_digits(CPF, 'CPF')
 
-    if CNPJ and not check_CNPJ_length(CNPJ):
+    if CNPJ and not check_CNPJ(CNPJ):
         raise HTTPException(detail=f"CNPJ is not valid, please assure it's {CNPJ_OFICIAL_LENGTH} characters long.", status_code=400)
-    if CPF and not check_CPF_length(CPF):
+    if CPF and not check_CPF(CPF):
         raise HTTPException(detail=f"CPF is not valid, please assure it's {CPF_OFICIAL_LENGTH} characters long.", status_code=400)
 
     return deactivate_client_card(session, card_digits, card_expiration, card_CVV, CNPJ, CPF)
@@ -265,9 +265,9 @@ def delete_pix_from_client(type_pix: str, CNPJ: str = None, CPF: str = None, ses
     elif CPF:
         CPF = transform_document_to_digits(CPF, 'CPF')
 
-    if CNPJ and not check_CNPJ_length(CNPJ):
+    if CNPJ and not check_CNPJ(CNPJ):
         raise HTTPException(detail=f"CNPJ is not valid, please assure it's {CNPJ_OFICIAL_LENGTH} characters long.", status_code=400)
-    if CPF and not check_CPF_length(CPF):
+    if CPF and not check_CPF(CPF):
         raise HTTPException(detail=f"CPF is not valid, please assure it's {CPF_OFICIAL_LENGTH} characters long.", status_code=400)
 
     return delete_client_pix_key(session, type_pix, CNPJ, CPF)
