@@ -88,10 +88,12 @@ class Client_Cards(SQLModel, table=True):
 class Client_Pix_keys(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True, ge=1)
     type_key: TypePixKey
-    key: str
+    key: str = Field(unique=True)
     date_approved: datetime = Field(default_factory=datetime.now, nullable=False)
 
     FK_idClient: int = Field(foreign_key="clients.id")
 
     client: Clients = Relationship(back_populates="pix_keys")
     payment_methods: List['Payment_methods'] = Relationship(back_populates="pix_key")
+
+    # __table_args__ = (UniqueConstraint("key"), )
