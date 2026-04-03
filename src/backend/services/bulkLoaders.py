@@ -13,7 +13,7 @@ from backend.config import DEBUG_MODE
 MODEL_CHOICES: dict[str, SQLModel] = { 
     name.lower(): obj 
     for name, obj in inspect.getmembers(models)
-    if issubclass(obj, SQLModel) and not (obj is SQLModel)
+    if inspect.isclass(obj) and issubclass(obj, SQLModel) and not (obj is SQLModel)
 }
 
 def load_range_data(session: Session, choice: str, limit: int = 15, offset: int = 0, _return_stmt = False) -> Sequence[SQLModel] | Select:
